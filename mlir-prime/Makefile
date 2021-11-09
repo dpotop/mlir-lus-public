@@ -29,227 +29,231 @@ CFILES = \
 
 OBJFILES = $(CFILES:.cpp=.o)
 
-LIBS_PORTABLE = \
-	-lExampleIRTransforms \
-	-lLLVMAggressiveInstCombine \
-	-lLLVMAnalysis \
-	-lLLVMAsmParser \
-	-lLLVMAsmPrinter \
-	-lLLVMBinaryFormat \
-	-lLLVMBitReader \
-	-lLLVMBitWriter \
-	-lLLVMBitstreamReader \
-	-lLLVMCFGuard \
-	-lLLVMCFIVerify \
-	-lLLVMCodeGen \
-	-lLLVMCore \
-	-lLLVMCoroutines \
-	-lLLVMCoverage \
-	-lLLVMDWARFLinker \
-	-lLLVMDebugInfoCodeView \
-	-lLLVMDebugInfoDWARF \
-	-lLLVMDebugInfoGSYM \
-	-lLLVMDebugInfoMSF \
-	-lLLVMDebugInfoPDB \
-	-lLLVMDemangle \
-	-lLLVMDlltoolDriver \
-	-lLLVMExecutionEngine \
-	-lLLVMExegesis \
-	-lLLVMExtensions \
-	-lLLVMFileCheck \
-	-lLLVMFrontendOpenACC \
-	-lLLVMFrontendOpenMP \
-	-lLLVMFuzzMutate \
-	-lLLVMGlobalISel \
-	-lLLVMIRReader \
-	-lLLVMInstCombine \
-	-lLLVMInstrumentation \
-	-lLLVMInterfaceStub \
-	-lLLVMInterpreter \
-	-lLLVMJITLink \
-	-lLLVMLTO \
-	-lLLVMLibDriver \
-	-lLLVMLineEditor \
-	-lLLVMLinker \
-	-lLLVMMC \
-	-lLLVMMCA \
-	-lLLVMMCDisassembler \
-	-lLLVMMCJIT \
-	-lLLVMMCParser \
-	-lLLVMMIRParser \
-	-lLLVMObjCARCOpts \
-	-lLLVMObject \
-	-lLLVMObjectYAML \
-	-lLLVMOption \
-	-lLLVMOrcJIT \
-	-lLLVMOrcShared \
-	-lLLVMOrcTargetProcess \
-	-lLLVMPasses \
-	-lLLVMProfileData \
-	-lLLVMRemarks \
-	-lLLVMRuntimeDyld \
-	-lLLVMScalarOpts \
-	-lLLVMSelectionDAG \
-	-lLLVMSupport \
-	-lLLVMSymbolize \
-	-lLLVMTableGen \
-	-lLLVMTableGenGlobalISel \
-	-lLLVMTarget \
-	-lLLVMTextAPI \
-	-lLLVMTransformUtils \
-	-lLLVMVectorize \
-	-lLLVMWindowsManifest \
-	-lLLVMXRay \
-	-lLLVMipo \
-	-lMLIRAMX \
-	-lMLIRAMXToLLVMIRTranslation \
-	-lMLIRAMXTransforms \
-	-lMLIRAVX512 \
-	-lMLIRAVX512ToLLVMIRTranslation \
-	-lMLIRAVX512Transforms \
-	-lMLIRAffine \
-	-lMLIRAffineEDSC \
-	-lMLIRAffineToStandard \
-	-lMLIRAffineTransforms \
-	-lMLIRAffineTransformsTestPasses \
-	-lMLIRAffineUtils \
-	-lMLIRAnalysis \
-	-lMLIRArmNeon \
-	-lMLIRArmNeonToLLVMIRTranslation \
-	-lMLIRArmSVE \
-	-lMLIRArmSVEToLLVM \
-	-lMLIRAsync \
-	-lMLIRAsyncToLLVM \
-	-lMLIRAsyncTransforms \
-	-lMLIRCAPIConversion \
-	-lMLIRCAPIIR \
-	-lMLIRCAPILinalg \
-	-lMLIRCAPIRegistration \
-	-lMLIRCAPISCF \
-	-lMLIRCAPIShape \
-	-lMLIRCAPIStandard \
-	-lMLIRCAPITensor \
-	-lMLIRCAPITransforms \
-	-lMLIRCEXECUTIONENGINE \
-	-lMLIRCallInterfaces \
-	-lMLIRCastInterfaces \
-	-lMLIRComplex \
-	-lMLIRComplexToLLVM \
-	-lMLIRControlFlowInterfaces \
-	-lMLIRCopyOpInterface \
-	-lMLIRDLTI \
-	-lMLIRDataLayoutInterfaces \
-	-lMLIRDerivedAttributeOpInterface \
-	-lMLIRDialect \
-	-lMLIRDialectUtils \
-	-lMLIREDSC \
-	-lMLIRExecutionEngine \
-	-lMLIRGPU \
-	-lMLIRGPUToGPURuntimeTransforms \
-	-lMLIRGPUToNVVMTransforms \
-	-lMLIRGPUToROCDLTransforms \
-	-lMLIRGPUToSPIRV \
-	-lMLIRGPUToVulkanTransforms \
-	-lMLIRIR \
-	-lMLIRInferTypeOpInterface \
-	-lMLIRJitRunner \
-	-lMLIRLLVMArmSVE \
-	-lMLIRLLVMArmSVEToLLVMIRTranslation \
-	-lMLIRLLVMIR \
-	-lMLIRLLVMIRTransforms \
-	-lMLIRLLVMToLLVMIRTranslation \
-	-lMLIRLinalg \
-	-lMLIRLinalgAnalysis \
-	-lMLIRLinalgEDSC \
-	-lMLIRLinalgToLLVM \
-	-lMLIRLinalgToSPIRV \
-	-lMLIRLinalgToStandard \
-	-lMLIRLinalgTransforms \
-	-lMLIRLinalgUtils \
-	-lMLIRLoopAnalysis \
-	-lMLIRLoopLikeInterface \
-	-lMLIRMath \
-	-lMLIRMathTransforms \
-	-lMLIRMemRef \
-	-lMLIRMlirOptMain \
-	-lMLIRNVVMIR \
-	-lMLIRNVVMToLLVMIRTranslation \
-	-lMLIROpenACC \
-	-lMLIROpenMP \
-	-lMLIROpenMPToLLVM \
-	-lMLIROpenMPToLLVMIRTranslation \
-	-lMLIROptLib \
-	-lMLIRPDL \
-	-lMLIRPDLInterp \
-	-lMLIRPDLToPDLInterp \
-	-lMLIRParser \
-	-lMLIRPass \
-	-lMLIRPresburger \
-	-lMLIRQuant \
-	-lMLIRROCDLIR \
-	-lMLIRROCDLToLLVMIRTranslation \
-	-lMLIRReduce \
-	-lMLIRRewrite \
-	-lMLIRSCF \
-	-lMLIRSCFToGPU \
-	-lMLIRSCFToOpenMP \
-	-lMLIRSCFToSPIRV \
-	-lMLIRSCFToStandard \
-	-lMLIRSCFTransforms \
-	-lMLIRSDBM \
-	-lMLIRSPIRV \
-	-lMLIRSPIRVBinaryUtils \
-	-lMLIRSPIRVConversion \
-	-lMLIRSPIRVDeserialization \
-	-lMLIRSPIRVModuleCombiner \
-	-lMLIRSPIRVSerialization \
-	-lMLIRSPIRVTestPasses \
-	-lMLIRSPIRVToLLVM \
-	-lMLIRSPIRVTransforms \
-	-lMLIRSPIRVTranslateRegistration \
-	-lMLIRSPIRVUtils \
-	-lMLIRShape \
-	-lMLIRShapeOpsTransforms \
-	-lMLIRShapeTestPasses \
-	-lMLIRShapeToStandard \
-	-lMLIRSideEffectInterfaces \
-	-lMLIRStandard \
-	-lMLIRStandardOpsTransforms \
-	-lMLIRStandardToLLVM \
-	-lMLIRStandardToSPIRV \
-	-lMLIRSupport \
-	-lMLIRSupportIndentedOstream \
-	-lMLIRTableGen \
-	-lMLIRTargetLLVMIRExport \
-	-lMLIRTargetLLVMIRImport \
-	-lMLIRTensor \
-	-lMLIRTensorTransforms \
-	-lMLIRTestAnalysis \
-	-lMLIRTestDialect \
-	-lMLIRTestIR \
-	-lMLIRTestPass \
-	-lMLIRTestReducer \
-	-lMLIRTestRewrite \
-	-lMLIRTestTransforms \
-	-lMLIRToLLVMIRTranslationRegistration \
-	-lMLIRTosa \
-	-lMLIRTosaTestPasses \
-	-lMLIRTosaToLinalg \
-	-lMLIRTosaToSCF \
-	-lMLIRTosaToStandard \
-	-lMLIRTosaTransforms \
-	-lMLIRTransformUtils \
-	-lMLIRTransforms \
-	-lMLIRTranslation \
-	-lMLIRVector \
-	-lMLIRVectorInterfaces \
-	-lMLIRVectorToLLVM \
-	-lMLIRVectorToROCDL \
-	-lMLIRVectorToSCF \
-	-lMLIRVectorToSPIRV \
-	-lMLIRViewLikeInterface \
-
-LIBS = $(LIBS_PORTABLE) $(LIBS_SPECIFIC)
+LIBS = -lExampleIRTransforms \
+-lLLVMAArch64AsmParser \
+-lLLVMAArch64CodeGen \
+-lLLVMAArch64Desc \
+-lLLVMAArch64Disassembler \
+-lLLVMAArch64Info \
+-lLLVMAArch64Utils \
+-lLLVMAggressiveInstCombine \
+-lLLVMAnalysis \
+-lLLVMAsmParser \
+-lLLVMAsmPrinter \
+-lLLVMBinaryFormat \
+-lLLVMBitReader \
+-lLLVMBitstreamReader \
+-lLLVMBitWriter \
+-lLLVMCFGuard \
+-lLLVMCFIVerify \
+-lLLVMCodeGen \
+-lLLVMCore \
+-lLLVMCoroutines \
+-lLLVMCoverage \
+-lLLVMDebugInfoCodeView \
+-lLLVMDebugInfoDWARF \
+-lLLVMDebugInfoGSYM \
+-lLLVMDebugInfoMSF \
+-lLLVMDebugInfoPDB \
+-lLLVMDemangle \
+-lLLVMDlltoolDriver \
+-lLLVMDWARFLinker \
+-lLLVMExecutionEngine \
+-lLLVMExegesis \
+-lLLVMExegesisAArch64 \
+-lLLVMExtensions \
+-lLLVMFileCheck \
+-lLLVMFrontendOpenACC \
+-lLLVMFrontendOpenMP \
+-lLLVMFuzzMutate \
+-lLLVMGlobalISel \
+-lLLVMInstCombine \
+-lLLVMInstrumentation \
+-lLLVMInterfaceStub \
+-lLLVMInterpreter \
+-lLLVMipo \
+-lLLVMIRReader \
+-lLLVMJITLink \
+-lLLVMLibDriver \
+-lLLVMLineEditor \
+-lLLVMLinker \
+-lLLVMLTO \
+-lLLVMMC \
+-lLLVMMCA \
+-lLLVMMCDisassembler \
+-lLLVMMCJIT \
+-lLLVMMCParser \
+-lLLVMMIRParser \
+-lLLVMObjCARCOpts \
+-lLLVMObject \
+-lLLVMObjectYAML \
+-lLLVMOption \
+-lLLVMOrcJIT \
+-lLLVMOrcShared \
+-lLLVMOrcTargetProcess \
+-lLLVMPasses \
+-lLLVMProfileData \
+-lLLVMRemarks \
+-lLLVMRuntimeDyld \
+-lLLVMScalarOpts \
+-lLLVMSelectionDAG \
+-lLLVMSupport \
+-lLLVMSymbolize \
+-lLLVMTableGen \
+-lLLVMTableGenGlobalISel \
+-lLLVMTarget \
+-lLLVMTextAPI \
+-lLLVMTransformUtils \
+-lLLVMVectorize \
+-lLLVMWindowsManifest \
+-lLLVMXRay \
+-lMLIRAffine \
+-lMLIRAffineEDSC \
+-lMLIRAffineToStandard \
+-lMLIRAffineTransforms \
+-lMLIRAffineTransformsTestPasses \
+-lMLIRAffineUtils \
+-lMLIRAMX \
+-lMLIRAMXToLLVMIRTranslation \
+-lMLIRAMXTransforms \
+-lMLIRAnalysis \
+-lMLIRArmNeon \
+-lMLIRArmNeonToLLVMIRTranslation \
+-lMLIRArmSVE \
+-lMLIRArmSVEToLLVM \
+-lMLIRAsync \
+-lMLIRAsyncToLLVM \
+-lMLIRAsyncTransforms \
+-lMLIRAVX512 \
+-lMLIRAVX512ToLLVMIRTranslation \
+-lMLIRAVX512Transforms \
+-lMLIRCallInterfaces \
+-lMLIRCAPIConversion \
+-lMLIRCAPIIR \
+-lMLIRCAPILinalg \
+-lMLIRCAPIRegistration \
+-lMLIRCAPISCF \
+-lMLIRCAPIShape \
+-lMLIRCAPIStandard \
+-lMLIRCAPITensor \
+-lMLIRCAPITransforms \
+-lMLIRCastInterfaces \
+-lMLIRCEXECUTIONENGINE \
+-lMLIRComplex \
+-lMLIRComplexToLLVM \
+-lMLIRControlFlowInterfaces \
+-lMLIRCopyOpInterface \
+-lMLIRDataLayoutInterfaces \
+-lMLIRDerivedAttributeOpInterface \
+-lMLIRDialect \
+-lMLIRDialectUtils \
+-lMLIRDLTI \
+-lMLIREDSC \
+-lMLIRExecutionEngine \
+-lMLIRGPU \
+-lMLIRGPUToGPURuntimeTransforms \
+-lMLIRGPUToNVVMTransforms \
+-lMLIRGPUToROCDLTransforms \
+-lMLIRGPUToSPIRV \
+-lMLIRGPUToVulkanTransforms \
+-lMLIRInferTypeOpInterface \
+-lMLIRIR \
+-lMLIRJitRunner \
+-lMLIRLinalg \
+-lMLIRLinalgAnalysis \
+-lMLIRLinalgEDSC \
+-lMLIRLinalgToLLVM \
+-lMLIRLinalgToSPIRV \
+-lMLIRLinalgToStandard \
+-lMLIRLinalgTransforms \
+-lMLIRLinalgUtils \
+-lMLIRLLVMArmSVE \
+-lMLIRLLVMArmSVEToLLVMIRTranslation \
+-lMLIRLLVMIR \
+-lMLIRLLVMIRTransforms \
+-lMLIRLLVMToLLVMIRTranslation \
+-lMLIRLoopAnalysis \
+-lMLIRLoopLikeInterface \
+-lMLIRMath \
+-lMLIRMathTransforms \
+-lMLIRMemRef \
+-lMLIRMlirOptMain \
+-lMLIRNVVMIR \
+-lMLIRNVVMToLLVMIRTranslation \
+-lMLIROpenACC \
+-lMLIROpenMP \
+-lMLIROpenMPToLLVM \
+-lMLIROpenMPToLLVMIRTranslation \
+-lMLIROptLib \
+-lMLIRParser \
+-lMLIRPass \
+-lMLIRPDL \
+-lMLIRPDLInterp \
+-lMLIRPDLToPDLInterp \
+-lMLIRPresburger \
+-lMLIRQuant \
+-lMLIRReduce \
+-lMLIRRewrite \
+-lMLIRROCDLIR \
+-lMLIRROCDLToLLVMIRTranslation \
+-lMLIRSCF \
+-lMLIRSCFToGPU \
+-lMLIRSCFToOpenMP \
+-lMLIRSCFToSPIRV \
+-lMLIRSCFToStandard \
+-lMLIRSCFTransforms \
+-lMLIRSDBM \
+-lMLIRShape \
+-lMLIRShapeOpsTransforms \
+-lMLIRShapeTestPasses \
+-lMLIRShapeToStandard \
+-lMLIRSideEffectInterfaces \
+-lMLIRSPIRV \
+-lMLIRSPIRVBinaryUtils \
+-lMLIRSPIRVConversion \
+-lMLIRSPIRVDeserialization \
+-lMLIRSPIRVModuleCombiner \
+-lMLIRSPIRVSerialization \
+-lMLIRSPIRVTestPasses \
+-lMLIRSPIRVToLLVM \
+-lMLIRSPIRVTransforms \
+-lMLIRSPIRVTranslateRegistration \
+-lMLIRSPIRVUtils \
+-lMLIRStandard \
+-lMLIRStandardOpsTransforms \
+-lMLIRStandardToLLVM \
+-lMLIRStandardToSPIRV \
+-lMLIRSupport \
+-lMLIRSupportIndentedOstream \
+-lMLIRTableGen \
+-lMLIRTargetLLVMIRExport \
+-lMLIRTargetLLVMIRImport \
+-lMLIRTensor \
+-lMLIRTensorTransforms \
+-lMLIRTestAnalysis \
+-lMLIRTestDialect \
+-lMLIRTestIR \
+-lMLIRTestPass \
+-lMLIRTestReducer \
+-lMLIRTestRewrite \
+-lMLIRTestTransforms \
+-lMLIRToLLVMIRTranslationRegistration \
+-lMLIRTosa \
+-lMLIRTosaTestPasses \
+-lMLIRTosaToLinalg \
+-lMLIRTosaToSCF \
+-lMLIRTosaToStandard \
+-lMLIRTosaTransforms \
+-lMLIRTransforms \
+-lMLIRTransformUtils \
+-lMLIRTranslation \
+-lMLIRVector \
+-lMLIRVectorInterfaces \
+-lMLIRVectorToLLVM \
+-lMLIRVectorToROCDL \
+-lMLIRVectorToSCF \
+-lMLIRVectorToSPIRV \
+-lMLIRViewLikeInterface \
 
 all: mlir-prime #externc.so
 

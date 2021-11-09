@@ -1,3 +1,0 @@
-./mlirlus -mainnode=test --normalize --convert-sync-to-std tests/test.sync
-./mlirlus --inline-nodes --normalize --convert-lus-to-sync --convert-sync-to-std tests/modularity2.lus
-./mlirlus --inline-nodes --normalize --convert-lus-to-sync --convert-sync-to-std tests/modularity.lus | mlir-opt --buffer-deallocation
