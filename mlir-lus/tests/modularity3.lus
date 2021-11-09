@@ -1,0 +1,8 @@
+lus.node dom @aux(%i: tensor<5xi32>) -> (tensor<5xi32>) {
+  lus.yield(%i:tensor<5xi32>)
+}
+
+lus.node dom @test(%mi: tensor<5xi32>) -> (tensor<5xi32>) {
+  %o3 = lus.instance @aux(%mi) : (tensor<5xi32>) -> (tensor<5xi32>)
+  lus.yield(%o3:tensor<5xi32>)
+}

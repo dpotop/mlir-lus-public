@@ -1,0 +1,9 @@
+lus.node dom @aux(%i: i32) -> (i32) {
+  %o = addi %i,%i: i32
+  lus.yield(%i:i32)
+}
+
+lus.node dom @test(%mi: i32) -> (i32) {
+  %o = lus.instance @aux(%mi) : (i32) -> (i32)
+  lus.yield(%o:i32)
+}

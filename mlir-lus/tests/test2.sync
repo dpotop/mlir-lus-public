@@ -1,0 +1,15 @@
+sync.node @aux(%i: !sync.sigin<tensor<5xi32>>)
+               -> (%o: !sync.sigout<tensor<5xi32>>) {
+  %z = sync.input(%i): tensor<5xi32>
+  sync.output(%o:%z): tensor<5xi32>
+  sync.halt
+}
+
+sync.node @test (%i: !sync.sigin<tensor<5xi32>>)
+                 -> (%o: !sync.sigout<tensor<5xi32>>) {
+  %a = sync.input(%i): tensor<5xi32>
+  %b = sync.inst @aux 2 (%a) : (tensor<5xi32>) -> tensor<5xi32>
+  // sync.output(%o:%b): i32
+  sync.output(%o:%a): tensor<5xi32>
+  sync.halt
+}
