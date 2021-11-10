@@ -5,6 +5,7 @@
 
 #include "mlir/IR/DialectImplementation.h"
 #include "mlir/IR/Builders.h"
+#include "mlir/Interfaces/SideEffectInterfaces.h"
 #include "../../Dialects/Sync/Sync.h"
 
 namespace mlir {
@@ -12,6 +13,7 @@ namespace mlir {
 
     class TickOp: public Op <
       TickOp,
+      MemoryEffectOpInterface::Trait,
       OpTrait::OneResult,
       OpTrait::VariadicOperands,
       OpTrait::ZeroSuccessor > {
@@ -27,6 +29,8 @@ namespace mlir {
       static ParseResult parse(OpAsmParser &parser, OperationState &result);
       void print(OpAsmPrinter &p);
       LogicalResult verify();
+
+      void getEffects(SmallVectorImpl<SideEffects::EffectInstance<MemoryEffects::Effect>> &effects) {}
 
       /// When lowering the op, the name of the generated function
       static StringRef getFunctionName() { return "tick"; }
