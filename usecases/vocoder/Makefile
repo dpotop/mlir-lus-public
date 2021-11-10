@@ -79,30 +79,14 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 			--convert-complex-to-llvm --convert-std-to-llvm $< -o=$@
 
 %.tensor.memref.mlir: %.tensor.mlir
-	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize --func-bufferize --finalizing-bufferize $< | \
-		$(MLIROPT) --buffer-results-to-out-params | \
-		$(MLIROPT) --buffer-deallocation \
-			-o=$@
+	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
+		--func-bufferize --buffer-results-to-out-params \
+		--finalizing-bufferize --buffer-deallocation $< -o=$@
 
 %.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
 	$(MLIRLUS) --normalize \
 			--convert-lus-to-sync --convert-sync-to-std $< |\
-		$(MLIROPT) --canonicalize --cse -o=$@
-
-
-# ifdef MOD
-# %.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
-# 	echo "XXXXXXXXXXXXXX"
-# 	$(MLIRLUS) -mainnode=$(APPNAME) --normalize \
-# 			--convert-lus-to-sync --convert-sync-to-std $< |\
-# 		$(MLIROPT) --canonicalize --cse -o=$@
-# else
-
-
-# endif
-
-# In the previous rule, I have disabled --sccp, because it produces
-# incorrect code in the last revision.
+		$(MLIROPT) --canonicalize --cse -sccp -o=$@
 
 %.c.o: %.c
 	$(CC) -c $< -o $@

@@ -28,8 +28,6 @@ CFILES = io.c tick.c
 
 ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(TF_FILES:.mlir=.tensor.memref.mlir)
 
-.PRECIOUS: resnet.tf.tensor.mlir
-
 all: $(APPNAME)
 
 $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
@@ -53,7 +51,7 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	--canonicalize --convert-linalg-to-affine-loops --cse \
 	--loop-permutation-prime=permutation-map=2,3,4,5,0,1,6 \
 	--affine-loop-normalize --lower-affine |\
-	$(MLIROPT) --convert-scf-to-std --convert-linalg-to-llvm \
+	$(MLIROPT) --buffer-deallocation --convert-scf-to-std --convert-linalg-to-llvm \
 	--convert-complex-to-llvm --convert-std-to-llvm -o=$@
 
 %.tensor.memref.mlir: %.tensor.mlir
@@ -63,7 +61,7 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	--tensor-constant-bufferize --linalg-bufferize --linalg-detensorize |\
 	$(MLIRPRIME) --bufferize-linalg-reshape |\
 	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
-	--finalizing-bufferize --promote-buffers-to-stack --cse -o=$@
+	--finalizing-bufferize --cse -o=$@
 
 %.tf.tensor.mlir : %.lus.mlir
 	@echo "Compiling $< to $@"

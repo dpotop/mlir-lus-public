@@ -54,17 +54,17 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	--canonicalize --convert-linalg-to-affine-loops --cse \
 	--loop-permutation-prime=permutation-map=2,3,4,5,0,1,6 \
 	--affine-loop-normalize --loop-invariant-code-motion --lower-affine |\
-	$(MLIROPT) --convert-scf-to-std --canonicalize --cse --convert-linalg-to-llvm \
+	$(MLIROPT) --buffer-deallocation --convert-scf-to-std --canonicalize --cse --convert-linalg-to-llvm \
 	--convert-complex-to-llvm --convert-std-to-llvm -o=$@
 
 %.tensor.memref.mlir: %.tensor.mlir
 	@echo "Compiling $< to $@"
-	@$(MLIROPT) $< --canonicalize --cse \
+	@$(MLIROPT) $< --canonicalize --cse -sccp \
 	--func-bufferize --buffer-results-to-out-params \
 	--tensor-constant-bufferize --linalg-bufferize --linalg-detensorize |\
 	$(MLIRPRIME) --bufferize-linalg-reshape |\
 	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
-	--finalizing-bufferize --promote-buffers-to-stack --cse -o=$@
+	--finalizing-bufferize --cse -o=$@
 
 %.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
 	@echo "Compiling $< to $@"

@@ -21,13 +21,9 @@ APPNAME = rnn
 
 TF_FILES = $(APPNAME).tf.mlir
 
-# MLIR_LUS_FILES = $(APPNAME)-wrapper.lus.mlir
-
 MLIR_MEMREF_FILES = rnn-aux.memref.mlir
 
 CFILES = scheduler.c scheduler-aux.c memrefs.c main.c 
-
-# ALLMLIRFILES = $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir)
 
 ALLMLIRFILES =  $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES)
 
