@@ -29,7 +29,7 @@ MLIR_MEMREF_FILES = main.memref.mlir
 
 CFILES = io.c tick.c
 
-ALLMLIRFILES = $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir)
+ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir) $(TF_FILES:.mlir=.tensor.memref.mlir) 
 
 all: $(APPNAME)
 
@@ -37,24 +37,29 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
 %.mlir.o: %.mlir.s
-	$(CC) -c $< -o $@
+	@echo "Compiling $< to $@"
+	@$(CC) -c $< -o $@
 
 %.mlir.s: %.mlir.bc
-	$(LLC) $< -o=$@
+	@echo "Compiling $< to $@"
+	@$(LLC) $< -o=$@
 
 %.mlir.bc: %.llvm.mlir
-	$(MLIRTRANS) --mlir-to-llvmir $< -o=$@
+	@echo "Compiling $< to $@"
+	@$(MLIRTRANS) --mlir-to-llvmir $< -o=$@
 
 %.memref.llvm.mlir: %.memref.mlir
-	$(MLIRPRIME) $< --remove-copy-prime --prime-linalg-to-affine \
+	@echo "Compiling $< to $@"
+	@$(MLIRPRIME) $< --remove-copy-prime --prime-linalg-to-affine \
 	--canonicalize --convert-linalg-to-affine-loops --cse \
 	--loop-permutation-prime=permutation-map=2,3,4,5,0,1,6 \
-	--affine-loop-normalize --lower-affine |\
-	$(MLIROPT) --convert-scf-to-std --convert-linalg-to-llvm \
+	--affine-loop-normalize --loop-invariant-code-motion --lower-affine |\
+	$(MLIROPT) --convert-scf-to-std --canonicalize --cse --convert-linalg-to-llvm \
 	--convert-complex-to-llvm --convert-std-to-llvm -o=$@
 
 %.tensor.memref.mlir: %.tensor.mlir
-	$(MLIROPT) $< --canonicalize --cse \
+	@echo "Compiling $< to $@"
+	@$(MLIROPT) $< --canonicalize --cse \
 	--func-bufferize --buffer-results-to-out-params \
 	--tensor-constant-bufferize --linalg-bufferize --linalg-detensorize |\
 	$(MLIRPRIME) --bufferize-linalg-reshape |\
@@ -62,10 +67,12 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	--finalizing-bufferize --promote-buffers-to-stack --cse -o=$@
 
 %.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
-	$(MLIRLUS) $< --normalize --convert-lus-to-sync --convert-sync-to-std -o=$@
+	@echo "Compiling $< to $@"
+	@$(MLIRLUS) $< --normalize --convert-lus-to-sync --convert-sync-to-std -o=$@
 
 %.tf.tensor.mlir : %.tf.mlir
-	$(TF_OPT) $< --tf-to-hlo-pipeline --mhlo-test-unfuse-batch-norm |\
+	@echo "Compiling $< to $@"
+	@$(TF_OPT) $< --tf-to-hlo-pipeline --mhlo-test-unfuse-batch-norm |\
 	$(IREE_OPT)  -iree-flow-hlo-to-hlo-preprocessing \
 	-iree-flow-extract-pad-from-conv \
 	--iree-codegen-hlo-to-linalg-on-tensors \
