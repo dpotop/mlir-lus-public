@@ -42,6 +42,6 @@ newfile=$basename".mlir"
 
 # Actual conversion command
 echo "   Start conversion."
-tf-mlir-translate --graphdef-to-mlir $1 | tf-opt --tf-executor-island-coarsening > $newfile
+tf-mlir-translate --graphdef-to-mlir $1 | tf-opt --tf-executor-island-coarsening --tf-shape-inference > $newfile
 
 echo "   Conversion completed."
