@@ -1,139 +1,141 @@
-# Under construction
+# Installation instructions
 
-
-#### Table of Contents  
-* [Installation instructions](#install)
-* [Running the use case](#running)
-* [Description of the use case](#description)
-  * [The reactive code and its compilation](#reactive)
-  * [The tick function](#tick)
-
-
-# Installation instructions <a name="install"/> 
-
-## Step 1: Prerequisites
-### External packages
+## External packages
 Our tool is built on top of LLVM/MLIR, which itself requires:
-* A recent version of clang (we recommend clang-9). For Ubuntu Linux, it can be 
-  installed with:
-  * ```sudo apt-get install clang-9 llvm-9.0 llvm-devel clang-devel```
+* A recent version of clang (we recommend clang-9). For Ubuntu Linux, it can 
+  be installed with:
+  ```
+  sudo apt-get install clang-9 llvm-9.0 llvm-devel clang-devel
+  ```
 * A recent version of cmake (>= cmake 13). For Ubuntu Linux, it must be 
   installed from sources to be downloaded at ```https://cmake.org/download```
+* Python 3 and pip :
+  ```
+   sudo apt-get install python3 python3-dev python3-pip
+   ```
+* The python TensorFlow library :
+   ```
+   pip install tensorflow
+   ```
+* A recent version of Bazel, which installation on Ubuntu Linux can be 
+  performed as described 
+  [here](https://docs.bazel.build/versions/main/install-ubuntu.html).
 * Recent versions of libgmp and z3 (can be found on opam)
 
 On MacOSX using macports, in some cases, full macports removal and 
 reinstallation may be needed. This can be done following the instructions
 at: https://trac.macports.org/wiki/Migration
 
-### LLVM/MLIR
-MLIR is a part of LLVM (it is downloaded and compiled as part of LLVM),
-available as such at:
-* https://github.com/llvm/llvm-project.git
-
-There are two ways of obtaining this code:
-* as a submodule of this project
-* as a standalone project
-If you get it as a sub-module, it is ensured that the correct
-version is downloaded. The disadvantage is that you will have one
-full copy of llvm-project inside the current project, whereas
-a standalone copy is more easily shared.
-
-#### Download LLVM/MLIR as a submodule
-In the root of this project, execute:
+## LLVM/MLIR
+### Clone The LLVM Project repo and select the good version
 ```
-   git submodule init
-   git submodule update
+git clone https://github.com/llvm/llvm-project
+git checkout bcd6424f9b693af57b29a0f03c52d6991be35d41
 ```
-
-Later, to get a new version of LLVM/MLIR:
-```
-   git submodule update --recursive --remote
-```
-
-Full git submodule documentation:
-* https://git-scm.com/book/en/v2/Git-Tools-Submodules
-* http://openmetric.org/til/programming/git-pull-with-submodule/
-
-#### Download as a standalone repository
-From the file listing at https://github.com/dpotop/mlir-rt note the revision of the 
-LLVM/MLIR used by our project. We will denote it by XXXX. For instance, if the
-file listing lists ```llvm-project @ ea475c7```, then XXXX=ea475c7 .
-
-Then:
-
-1- Pull the LLVM source with ```git clone git@github.com:llvm/llvm-project.git```
-
-2- Choose the right version of LLVM/MLIR, which ensures that our code compiles correctly in the current version:
-
-```
-cd llvm-project
-git checkout XXXX
-```
-
-#### Compilation and installation
-We make the assumption that installation prefix is $(HOME)/llvm .
-
-Move to the llvm-project folder and execute. The COMPILER define
-directives of the cmake call may have to be updated depending
-on the compiler used.
+### Compilation and installation
+We make the assumption that installation prefix is $(HOME)/llvm. 
+After compilation, ```$HOME/llvm/bin``` must be added to $PATH.
+- On Linux 64 bits :
 ```
 cd llvm-project
 mkdir build
 cd build
-cmake -DLLVM_ENABLE_PROJECTS=mlir -DLLVM_BUILD_EXAMPLES=ON -DLLVM_TARGETS_TO_BUILD=X86 -DCMAKE_INSTALL_PREFIX=$HOME/llvm -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_ASSERTIONS=ON -DCMAKE_C_COMPILER=clang-mp-9.0 -DCMAKE_CXX_COMPILER=clang++-mp-9.0 -DCMAKE_ASM_COMPILER=clang-mp-9.0 -DCMAKE_CXX_FLAGS_DEBUG="-fno-omit-frame-pointer -fsanitize=address" -DCMAKE_SHARED_LINKER_FLAGS="-fno-omit-frame-pointer -fsanitize=address" -DCMAKE_EXE_LINKER_FLAGS="-fno-omit-frame-pointer -fsanitize=address " ../llvm
-make -j6
+cmake -DLLVM_ENABLE_PROJECTS=mlir -DLLVM_BUILD_EXAMPLES=ON \
+  -DLLVM_TARGETS_TO_BUILD=AArch64 -DCMAKE_INSTALL_PREFIX=$HOME/llvm \
+  -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_ASM_COMPILER=clang \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fno-omit-frame-pointer" \
+  -DCMAKE_EXE_LINKER_FLAGS="-fno-omit-frame-pointer" ../llvm
+make -j4
 make install
 ```
-Attention, depending on the platform, clang-9 and clang++-9 must be replaced with the appropriate compiler names).
-The flag -DCMAKE_INSTALL_PREFIX can be changed and tells where LLVM and MLIR will be installed. The compilation flags are set for a debug configuration with run-time memory error detection (which is very useful, given the use of C++ and of complex program rewriting logic).
+- On MacOs M1 :
+```
+cd llvm-project
+mkdir build
+cd build
+cmake -DLLVM_ENABLE_PROJECTS=mlir -DLLVM_BUILD_EXAMPLES=ON \
+  -DLLVM_TARGETS_TO_BUILD="ARM;X86;AArch64" \
+  -DLLVM_DEFAULT_TARGET_TRIPLE="arm64-apple-darwin20.6.0" \
+  -DCMAKE_OSX_ARCHITECTURES='arm64' -DCMAKE_INSTALL_PREFIX=$HOME/llvm \
+  -DCMAKE_BUILD_TYPE=Release -DLLVM_ENABLE_ASSERTIONS=ON \
+  -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+  -DCMAKE_ASM_COMPILER=clang \
+  -DCMAKE_SHARED_LINKER_FLAGS="-fno-omit-frame-pointer" \
+  -DCMAKE_EXE_LINKER_FLAGS="-fno-omit-frame-pointer" ../llvm
+make -j8
+make install
+```
+	
+## IREE/Tensorflow
+### Clone the IREE repo
+```
+git clone https://github.com/google/iree.git
+git checkout 4f218a8be5ba3e840ebfc8300c9124d01ab0ecc1
+git submodule update --init
+```
+### Compilation of Tensorflow
+From iree directory :
+```
+cd third_party/tensorflow
+git submodule update --init
+bazel build //tensorflow/compiler/mlir:tf-mlir-translate
+bazel build //tensorflow/compiler/mlir:tf-opt
+```
+After compilation, 
+```iree/third_party/tensorflow/bazel-out/k8-opt/bin/tensorflow/compiler/mlir```
+must be added to $PATH.
+### Compilation of IREE
+From iree directory :
+```
+python3 configure_bazel.py
+bazel build //tensorflow/compiler/mlir:tf-mlir-translate
+bazel build //iree/tools:iree-opt
+```
+   
+After compilation, ```iree/bazel-out/k8-opt/bin/iree/tools``` must be added 
+to $PATH.
 
-After compilation, ```$HOME/llvm/bin``` must be added to $PATH.
-
-### Sound eXchange (SoX)
+## Sound eXchange (SoX)
 Our use case requires the use of the sox sound processing toolbox. 
 * On Ubuntu Linux, it can be installed with ```sudo apt-get install sox```
-* Under MacOSX, using ```macports```, the install command is ```sudo port install sox```
+* Under MacOSX, using ```macports```, the install command 
+  is ```sudo port install sox```
 
-## Step 2: Install ```mlirlus``` and the use case
-
-### Step 2.a. Download (PLDI2020 reviewers only)
-Along with this file, download the encrypted archive ```pldi2020-419.tar.gz.enc```.
-
-Decrypt it using the password provided along with the download link, using the following command (where XXXXXXXX is replaced by the actual password provided as part of our submission).
-```
-openssl enc -aes-256-cbc -d -pass pass:XXXXXXXX -in pldi2020-419.tar.gz.enc | tar xz
-```
-The resulting folder contains:
-* the sub-folder "mlir-lus" containing the MLIR extension we propose
-* the sub-folder "vocoder-use-case" containing the pitch vocoder 
-
-### Step 2.b: Compile mlirlus
+## MLIRLus
 
 In the mlir-lus folder :
 
-1- Create the file Makefile.config and set within it the variables LLVM, CPP, LDFLAGS, CC. A standard one for Ubuntu can be this one :
+1- Create the file Makefile.config and set within it the variables LLVM, CPP, 
+   LDFLAGS, CC. A standard one for Ubuntu can be this one :
 ```
 LLVM=$(HOME)/llvm
 CPP=clang++-9
-LDFLAGS= -L $(LLVM)/lib -lpthread
+LDFLAGS= -L $(LLVM)/lib -lpthread -g
 CC=clang-9
+LD=clang++-9
 ```
 
-2- Build dependencies with ```touch makefile.depend```, followed by ```make depend```
+2- Build dependencies with ```touch makefile.depend```, 
+   followed by ```make depend```
 
 3- Build mlirlus with ```make```
 
-## Step 3: Build the use case
+## Usecases
 
-Move to the ```vocoder-use-case``` directory.
+For each usecase, if needed, change variables on top of its Makefile. Example :
+variable ```MLIRLUS ``` must be set to the  path of your build of 
+```mlir-lus``` (normally ```../../mlir-lus```).
 
-1- If needed, change variables on top of the Makefile. Variable ```LLVMDIR``` must be set to the installation folder of ```llvm``` (normally ```$(HOME)/llvm```). Variable ```MLIRLUS ``` must be set to the path of your build of ```mlir-lus``` (normally ```../mlir-lus```).
+### Pitch tuning vocoder
 
-2- Build the use case in the pitch-lus-threads directory with ```make```
+### Build the use case
 
+Move to the ```pitch-sched``` directory and build the use case ```make```
 The result of compilation is file ```pitch```.
 
-# Running the use case <a name="running"/> 
+### Running the use case
 
 To allow execution, the computer must have a sound input and 
 a sound output device. On a common notebook, these are either 
@@ -179,20 +181,20 @@ will reduce the pitch by 3.5 semitones.
 We use this (primitive) interface in order to avoid further
     reliance on external libraries such as ncurses.
 
-# Description of the use case <a name="description"/> 
+### Description of the use case
+
 The source code of the use case consists of files of 3 types:
-* ```lus``` dialect code is grouped in file ```pitch.lus```, 
+* ```lus``` dialect code is grouped in file ```pitch.lus.mlir```, 
   where it is mixed with regular MLIR code of the ```Standard```
   dialect. 
 
-* Regular MLIR code is grouped in the ```*.mlir``` files.
+* Regular MLIR code is grouped in the other ```*.mlir``` files.
   This comprises the majority of the use case. It can be 
   integrated with the reactive code, but we preferred keeping
   the reactive code apart for lisibility.
   
 * C code:
-  * ```tick.c``` provides the implementation of the ```tick```
-    function (description below)
+  * The implementation of the longjmp-based scheduler.
   * ```sndio.c``` provides the soundcard read and write routines,
     which cannot be written in MLIR in the standard dialect (only
 	in the lower-level LLVM dialect).
@@ -200,116 +202,60 @@ The source code of the use case consists of files of 3 types:
     that does not interface with the OS. It can be
     converted to MLIR, but we preferred showcasing the ability 
 	to interface.
-	
-## The reactive code and its compilation <a name="reactive"/> 
-	
-All reactive code is contained in file ```pitch.lus``` and 
-consists of standard MLIR and ```lus``` dialect code.
-The code is divided in 3 nodes:
-* Node ```@pitch``` implements the top-level I/O and control,
-  including the sliding window over input samples, and the
-  mute/unmute control. It
-  instantiates nodes ```@pitch_algo``` and ```@kbd_ctrl```
-* Node ```@pitch_algo``` implements the pitch shifting
-  signal processing algorithm.
-* Node ```@kbd_ctrl``` implements the keyboard interaction
-   algorithm that changes the pitch correction configuration.	
-	
-NOTE: In the source code, all ```lus``` and ```sync``` dialect 
-operations are prefixed with the dialect name. Thus, ```lus.fby``` 
-is the operation ```fby``` of dialect ```lus```.
 
-Our reactive source code showcases all features of the Lustre 
-language described in the paper:
-* Cyclic execution model (implicit)
-* Cyclic I/O through the interface variables of the three nodes.
-* Feedback (program state) implemented using the ```lus.fby```
-  operation.
-* Dataflow expression of conditional execution, using the 
-  ```lus.when``` and ```lus.merge``` operations. 
-  In particular:
-  * All the
-  signal processing pipeline of node ```@pitch_algo``` is not
-  executed when variable ```%sndon``` is ```false```, as enforced
-  by the sub-sampling of the input of ```@pitch_algo``` by the
-  ```lus.when``` operations in lines 62 and 63.
-  * When this happens, sound output is flat (constant 0), as
-    specified using the ```lus.merge``` operation in line 
-	78. The result is muted sound output.
-* Modularity. In our use case, for simplicity, it is handled 
-  at the dataflow level through inlining.
+## Resnet50
 
-The first step in the compilation of this code is to lower
-it to the abstraction level of the ```sync``` dialect
-described in Section 3 of the submitted paper. This 
-is done through the command:
+Resnet50 is a convolutional neural network which is 50 layers deep which
+performs computationnally-intensive operations.
 
-```../mlir-lus/mlirlus --inline-nodes -mainnode=pitch --normalize --convert-lus-to-sync pitch.lus```
+### Resnet50 as our usecase
 
-At this level:
-* State is encoded using existing mechanisms provided by standard SSA.
-  In our paper, this is done using variables and phi operations. 
-  The output of our tool uses higher-level structured control 
-  flow constructs provided by MLIR (as part of the ```SCF``` dialect),
-  which facilitate subsequent memory allocation phases (but will 
-  ultimately be lowered to standard dialect).
-* Variable-based inputs and outputs have been transformed into 
-  I/O channel variables and ```sync.input``` and ```sync.output``` operations.
-* The implicit cyclic execution model, implicit activation conditions,
-  and implicit cycle separation is made explicit using standard 
-  SSA control flow and the ```sync.tick``` operation. This operation also
-  requires the explicit use of ```sync.undef``` operations.
+The directories usecases/resnet50 (on which we performed our benchmarks and 
+which splits lus and tensorflow code in two files) and
+usecases/resnet50-compact (which provide an implementation combining lus and
+tensorflow code in the same file) contain Resnet50 as our usecases.
 
-From this level, a further lowering phase, materialized in the 
-command line option ```--convert-sync-to-std``` will lower 
-the ```sync``` dialect operations to standard dialect MLIR, 
-including calls to library functions such as ```tick()```, 
-defined below. 
+### Build the use case
 
-At this point, no memory allocation has yet been performed. The 
-compilation script does that using the ```mlir-opt``` tool 
-of MLIR, as described in the Makefile (in the
-rule of lines 79-91).
-	
-## The ```tick```function <a name="tick"/> 
-This function, provided in file ```tick.c``` 
-is a soft real-time implementation of the tick operation defined
-in the paper).  The objective is here simply to reduce the pressure on
-soundcard I/O polling by making the software wait on time for the
-largest part of the computation cycle.
+Move to the ```resnet50``` directory and build the use case ```make```
+The result of compilation is file ```resnet```. It prints the timestamp at
+each cycle.
 
-To determine the wait duration, one must consider:
-* the sampling frequency (44.1kHz = 44100 samples/second)
-* the number of samples treated during one execution
-  cycle (256 samples/cycle)
+### Production of Resnet50
 
-These two determine that the computation throughput is
-of 44100/256 = 172 cycles/second. This throughput is
-naturally ensured by the interaction between the application,
-the OS, and the sound HW.
+We provide a full (trained) Resnet50 implementation, but you can produce it 
+yourself, from the Python Tensorflow library. You have to launch the 
+usecases/produce-resnet50/produce-resnet50.sh script. In the produced 
+resnet.mlir file, you just have to :
+- Manually remove the wrapping operations tf\_executor.graph and 
+  tf\_executor.island
+- Manually replace the value produced by the "tf.Placeholder" op by a function
+  parameter.
+- Manually return the last value produced.
+- Update the function type.
 
-The (average) duration of one execution cycle is therefore
-1/172 seconds = 5.81 ms. However, the software only spends
-a fraction of this time doing computations. Most of the
-time it will wait on the sound input, which potentially involves
-continuous polling.
+Then you can use this file instead of usecases/resnet50/resnet.tf.mlir.
+If you (manually) change the function into a lus node, you can use it instead 
+of usecases/resnet50-compact/resnet.lus.mlir.
 
-Our objective is to reduce the amount of polling by ensuring
-that, for much of the execution cycle, the application simply
-waits on time. We do this by using the usleep system service.
+## Timeseries
 
-The argument provided to usleep must always be smaller than
-the cycle average duration of 5.81 ms. Otherwise, the system
-is non-schedulable.
+This Recurrent Neural Network with one single LSTM layer is the one described
+in the paper. We reimplemented it on the basis of the method used for Resnet50,
+but it needed more significant modifications (about the steate representation).
+We also reduce the learnt-weigths to zero constant tensors.
 
-Given the complexity of the OSs on which this application
-is executed, no good estimation method exists beyond testing.
-On a Intel Core i7 quad-core running at 2.5GHz in 16Go of RAM
-under MacOSX 10.15.3, 4ms is sometimes insufficient (depending on
-the system load), and 3.5ms is a safe value. The value must be
-tuned for the architecture. We set here a very safe value of
-2ms that should allow execution on most modern platforms.
+### Timeseries as our usecase
 
-Note that input to usleep is given in microseconds. Thus, to
-specify a delay of 2 ms, one should give usleep 2000 as argument.
-Also note that the argument of usleep is a minimum delay.
+The directory usecases/time-series provides our implementation interfaced to
+the longjmp-based scheduler, and the directory usecases/time-series-inlined
+provides an (earlier) version that just inlines nodes insteaf of truly
+instantiate them.
+
+### Build the use case
+
+Move to the ```time-series``` directory and build the use case ```make```
+The result of compilation is file ```rnn```. It prints the timestamp at each
+cycle.
+
+
