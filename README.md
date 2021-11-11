@@ -105,6 +105,10 @@ Our use case requires the use of the sox sound processing toolbox.
 
 ## MLIRLus
 
+MLIRLus is the implementation of our embedding of Lustre in MLIR.
+
+### Compilation
+
 In the mlir-lus folder :
 
 1- Create the file Makefile.config and set within it the variables LLVM, CPP, 
@@ -121,6 +125,63 @@ LD=clang++-9
    followed by ```make depend```
 
 3- Build mlirlus with ```make```
+
+### Options
+
+The produced binary (named mlirlus) takes an input file and prints its output
+on the standard output. The command : ```./mlirlus file.lus``` just parses
+file.lus, verify its correction and prints it.
+Several options can be composed :
+* ```--normalize``` replaces fby and pre operations by representing state
+  in the node signature, and ensures that dominance rules are now respected
+  in lus code.
+* ```--inline-nodes``` inline nodes instead of truly instantiating them when
+  lus.instance is specified.
+* ```--convert-lus-to-sync``` convert lus operations to sync operations and
+  scf operations (for the main loop and for the clock-based predicates).
+* ```--convert-sync-to-scf``` convert sync operations to std operations
+
+## MLIR prime
+
+MLIR prime is an auxiliary tool which implements a bunch of optimizations
+using MLIR libraries (and some bug corrections).
+
+### Compilation
+
+In the mlir-prime folder :
+
+1- Create the file Makefile.config and set within it the variables LLVM, CPP, 
+   LDFLAGS, CC. A standard one for Ubuntu can be this one :
+```
+LLVM=$(HOME)/llvm
+CPP=clang++-9
+LDFLAGS= -L $(LLVM)/lib -lpthread -g
+CC=clang-9
+LD=clang++-9
+```
+
+2- Build dependencies with ```touch makefile.depend```, 
+   followed by ```make depend```
+
+3- Build mlir-prime with ```make```
+
+### Options
+
+The produced binary (named mlir-prime) takes an input file and prints its output
+on the standard output. The command : ```./mlir-prime file.prime``` just parses
+file.prime, verify its correction and prints it.
+Several options can be composed with the builtin options of MLIR :
+* ```--bufferize-linalg-reshape``` corrects a limitation of the bufferization
+  passes on the version of MLIR we used for the use cases (this limitation
+  is corrected in the current MLIR version).
+* ```--remove-copy-prime``` removes linalg.copy operations on which we had
+  problems for lowering.
+* ```--prime-linalg-to-affine``` bypasses the builtin lowering of the dialect 
+  linalg to the dialect affine using packing, tiling... These optimisations
+  are machine-dependent and correspond to our benchmark architecture.
+* ```--loop-permutation-prime``` extends the built-in ```loop-permutation```
+  option which just operates on the first loop of the program. We are
+  currently submitting this extension to the MLIR project.
 
 ## Usecases
 
