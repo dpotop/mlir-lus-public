@@ -15,7 +15,7 @@ specific versions of IREE and TensorFlow by trying to reuse full
 compilation pipelines they expose (instead of just compilation
 steps). 
 
-## Dependences
+## Step 1: Install dependences
 Our tool is built on top of LLVM/MLIR, which itself requires:
 * A recent version of clang (we recommend clang-9). For Ubuntu Linux, it can 
   be installed with:
@@ -41,13 +41,13 @@ On MacOSX using macports, in some cases, full macports removal and
 reinstallation may be needed. This can be done following the instructions
 at: https://trac.macports.org/wiki/Migration
 
-## LLVM/MLIR
-### Clone The LLVM Project repo and select the good version
+## Step 2: Install LLVM/MLIR
+### Step 2.1: Clone the github repository
 ```
 git clone https://github.com/llvm/llvm-project
 git checkout bcd6424f9b693af57b29a0f03c52d6991be35d41
 ```
-### Compilation and installation
+### Step 2.2: Compilation and installation
 We make the assumption that installation prefix is $(HOME)/llvm. 
 After compilation, ```$HOME/llvm/bin``` must be added to $PATH.
 - On Linux 64 bits :
@@ -83,15 +83,15 @@ make -j8
 make install
 ```
 	
-## IREE/Tensorflow
-### Clone the IREE repo
+## Step 3: Install IREE and Tensorflow
+### Step 3.1: Clone the github repository
 ```
 git clone https://github.com/google/iree.git
 git checkout 4f218a8be5ba3e840ebfc8300c9124d01ab0ecc1
 git submodule update --init
 ```
-### Compilation of Tensorflow
-From iree directory :
+### Step 3.2: Compilation of Tensorflow (as a dependence of IREE)
+From the iree directory :
 ```
 cd third_party/tensorflow
 git submodule update --init
