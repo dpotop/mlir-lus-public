@@ -301,17 +301,39 @@ TASK_ID_TYPE sched_get_parent_tid(void) {
 // The two core routines for giving control between tasks:
 // - tick() returns control to the instantiating module
 // - inst() gives control for one tick to an instantiated module
-/* int32_t tick(void) { */
-/*   sched_set_task(sched_get_parent_tid()) ; */
-/*   sched_relinquish() ; */
-/*   return 0; */
-/* } */
+
+static unsigned long start = 0;
+static unsigned long start_usec = 0;
+
+void init_time() {
+  struct timeval time;
+  gettimeofday(&time, NULL);
+  start = time.tv_sec;
+  start_usec = time.tv_usec;
+}
+
+int32_t tick(void) {
+  TASK_ID_TYPE tid = sched_get_tid();
+  if (tid == 1) {
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    unsigned long stop = time.tv_sec;
+    unsigned long stop_usec = time.tv_usec;
+    unsigned long elapsed = (stop - start) * 1000000 + stop_usec - start_usec;
+    printf("timestamp: %lu us\n", elapsed);
+    gettimeofday(&time, NULL);
+    start = time.tv_sec;
+    start_usec = time.tv_usec;
+  }
+  sched_set_task(sched_get_parent_tid()) ;
+  sched_relinquish() ;
+  return 0;
+}
 
 void inst(TASK_ID_TYPE id) {
   sched_set_task(id) ;
   sched_relinquish() ;
 }
-
 
 //======================================================================
 // Move up in abstraction level. The sch_set_instance routine will

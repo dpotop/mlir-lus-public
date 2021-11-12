@@ -35,6 +35,7 @@ TASK_ID_TYPE  sched_get_parent_tid(void) ;
 
 //================================================================
 // Moving up the abstraction levels
+void init_time();
 int32_t tick(void) ;
 void inst(TASK_ID_TYPE id) ;
 void sch_set_instance(TASK_ID_TYPE id,TASK_TYPE start_func,int32_t inputs,int32_t outputs) ;

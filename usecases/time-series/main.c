@@ -26,7 +26,12 @@ void sched_set_output_memrefxxf32(TASK_ID_TYPE tid,
 				  intptr_t     offset,
 				  ...);
 
-void task1_start(TASK_ID_TYPE tid);
+void task1_start(TASK_ID_TYPE tid) {
+  if (tid == 1) {
+    init_time();
+  }
+  timeseries(tid, sched_read_input, sched_write_output);
+}
 
 // This is the main task of the system, which instantiates the
 // tick synchronization and instantiates the main node. It should

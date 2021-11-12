@@ -13,7 +13,7 @@ ALLMLIRFILES =  $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES)
 
 RUNTIME_DIR = ../runtime
 
-CFILES = $(RUNTIME_DIR)/scheduler.c scheduler-aux.c memrefs.c main.c 
+CFILES = $(RUNTIME_DIR)/scheduler.c $(RUNTIME_DIR)/scheduler_io.c memrefs.c main.c 
 
 all: $(APPNAME)
 
@@ -66,6 +66,4 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f $(APPNAME)-wrapper.lus.tensor.mlir $(APPNAME)-wrapper.lus.tensor.memref.mlir
-	rm -f $(APPNAME)-wrapper.lus.tensor.memref.llvm.mlir
 	rm -f $(APPNAME) *.o
