@@ -8,9 +8,12 @@ TF_FILES = $(APPNAME).tf.mlir
 
 MLIR_MEMREF_FILES = rnn-aux.memref.mlir
 
-CFILES = scheduler.c scheduler-aux.c memrefs.c main.c 
 
 ALLMLIRFILES =  $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES)
+
+RUNTIME_DIR = ../runtime
+
+CFILES = $(RUNTIME_DIR)/scheduler.c scheduler-aux.c memrefs.c main.c 
 
 all: $(APPNAME)
 

@@ -1,5 +1,4 @@
-#include "scheduler.h"
-#include "error.h"
+#include "../runtime/scheduler.h"
 #include <unistd.h>
 #include <sys/time.h>
 #include <stdlib.h>

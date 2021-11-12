@@ -3,8 +3,7 @@
 #include <strings.h>
 #include <stdint.h>
 
-#include "error.h"
-#include "scheduler.h"
+#include "../runtime/scheduler.h"
 #include "memrefs.h"
 
 void sched_set_input_memrefxxf32(TASK_ID_TYPE tid,
