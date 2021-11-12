@@ -1,37 +1,23 @@
-LLVMDIR=$(HOME)/llvm
-MLIROPT = $(LLVMDIR)/bin/mlir-opt
-MLIRTRANS = $(LLVMDIR)/bin/mlir-translate
-LLC = llc
+# Set up compilation configuration 
+input ../makefile.config
 
-MLIRLUSDIR=../../mlir-lus
-MLIRLUS = $(MLIRLUSDIR)/mlirlus
-
-MLIRPRIMEDIR=../../mlir-prime
-MLIRPRIME = $(MLIRPRIMEDIR)/mlir-prime
-
-IREE_BIN_DIR=/home/hpompougnac/.cache/bazel/_bazel_hpompougnac/c21dee9b578a4b1c3f60a275119db250/execroot/iree_core/bazel-out/k8-opt/bin
-TF_BIN_DIR=/home/hpompougnac/.cache/bazel/_bazel_hpompougnac/52c22a949d9769dd1d18ce3d575a5e05/execroot/org_tensorflow/bazel-out/k8-opt/bin
-
-IREE_OPT=$(IREE_BIN_DIR)/iree/tools/iree-opt
-TF_OPT=$(TF_BIN_DIR)/tensorflow/compiler/mlir/tf-opt
-
-CC=clang
-LDFLAGS=-lm
-
+# Application name
 APPNAME = resnet
 
 TF_FILES = $(APPNAME).tf.mlir
+
+MLIR_LUS_FILES = $(APPNAME)-wrapper.lus.mlir
 
 MLIR_MEMREF_FILES = main.memref.mlir
 
 CFILES = io.c tick.c
 
-ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(TF_FILES:.mlir=.tensor.memref.mlir)
+ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir) $(TF_FILES:.mlir=.tensor.memref.mlir) 
 
 all: $(APPNAME)
 
 $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
-	$(CC) $^ -o $@ $(LDFLAGS)
+	$(LD) $^ -o $@ $(LDFLAGS)
 
 %.mlir.o: %.mlir.s
 	@echo "Compiling $< to $@"
@@ -39,7 +25,7 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 
 %.mlir.s: %.mlir.bc
 	@echo "Compiling $< to $@"
-	@$(LLC) -O3 --fp-contract=fast $< -o=$@
+	@$(LLC) $< -o=$@
 
 %.mlir.bc: %.llvm.mlir
 	@echo "Compiling $< to $@"

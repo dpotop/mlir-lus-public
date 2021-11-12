@@ -1,28 +1,7 @@
-#-------------------------------------------------------------
-# Tool configuration. TODO: choose the good folders
-#-------------------------------------------------------------
-# The installation folder of LLVM/MLIR
-LLVMDIR=$(HOME)/llvm-old
-# The folder containing mlir-lus
-MLIRLUSDIR=../../mlir-lus
-# The C compiler (gcc or clang)
-# CC=gcc
-CC=clang
-LD=clang
-# Linker flags
-LDFLAGS=-lm
+# Set up compilation configuration 
+input ../makefile.config
 
-#-------------------------------------------------------------
-# Tools. DO NOT CHANGE
-#-------------------------------------------------------------
-MLIRLUS = $(MLIRLUSDIR)/mlirlus
-MLIROPT = $(LLVMDIR)/bin/mlir-opt
-MLIRTRANS = $(LLVMDIR)/bin/mlir-translate
-LLC = llc
-
-#-------------------------------------------------------------
-# Use case configuration. DO NOT CHANGE
-#-------------------------------------------------------------
+# Application name
 APPNAME = pitch
 
 # Highest abstraction level.
