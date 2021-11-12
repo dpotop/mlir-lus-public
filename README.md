@@ -44,13 +44,9 @@ The repository comprises 3 main folders:
 * **mlir-prime** is a tool that exposes existing MLIR code transformations that are not exposed by the command-line transformation tools of MLIR. 
 * **usecases** showcases the use of our new dialects on a few signal processing and ML applications.
 
-# Installation instructions
+# [Installation instructions](INSTALL.md)
 
-Installation instructions can be found [here](INSTALL.md)
-
-# Invocation of mlirlus and mlirprime
-
-The manual of the two tools can be found [here](INVOCATION.md)
+# [Invocation of mlirlus and mlirprime](INVOCATION.md)
 
 # Licensing
 
