@@ -50,7 +50,7 @@ Installation instructions can be found [here](INSTALL.md)
 
 # Licensing
 
-TODO - for now there is no license, meaning that code cannot be reused.
+TODO - for now there is no license, meaning that code cannot be reused. We are currently evaluating our options.
 
 # Contact information
 
