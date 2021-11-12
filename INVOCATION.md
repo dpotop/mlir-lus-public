@@ -17,7 +17,7 @@ compilation steps described in [this paper](https://hal.inria.fr/hal-03043623/do
   in the implementation.
 * ```--convert-lus-to-sync``` converts lus operations to a combination of 
   operations of the dialects sync and scf (structured control flow).
-* ```--convert-sync-to-scf``` converts sync operations to std operations,
+* ```--convert-sync-to-std``` converts sync operations to std operations,
   including calls to the run-time functions implementing the reactive 
   execution machine.
 
