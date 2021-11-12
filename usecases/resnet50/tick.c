@@ -19,7 +19,7 @@ void tick() {
   unsigned long stop = time.tv_sec;
   unsigned long stop_usec = time.tv_usec;
   unsigned long elapsed = (stop - start) * 1000000 + stop_usec - start_usec;
-  printf("time since last tick: %lu us\n", elapsed);
+  printf("tick: %lu us\n", elapsed);
   start = stop;
   start_usec = stop_usec;
 }

@@ -1,0 +1,5 @@
+*.o
+resnet-ext
+resnet-compact
+resnet-compact.lus.mlir
+resnet-ext.tf.mlir

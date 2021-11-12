@@ -3,20 +3,28 @@ include ../makefile.config
 
 # Application name
 APPNAME = resnet
+APPNAME_EXT = $(APPNAME)-ext
+APPNAME_COMPACT = $(APPNAME)-compact
 
-TF_FILES = $(APPNAME).tf.mlir
+TF_FILES_EXT = $(APPNAME_EXT).tf.mlir
+MLIR_LUS_FILES_EXT = $(APPNAME_EXT).lus.mlir
+MLIR_MEMREF_FILES_EXT = main-ext.memref.mlir
 
-MLIR_LUS_FILES = $(APPNAME)-wrapper.lus.mlir
-
-MLIR_MEMREF_FILES = main.memref.mlir
+MLIR_MEMREF_FILES_COMPACT = main-compact.memref.mlir
+MLIR_LUS_FILES_COMPACT = $(APPNAME_COMPACT).lus.mlir
 
 CFILES = io.c tick.c
 
-ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir) $(TF_FILES:.mlir=.tensor.memref.mlir) 
+ALLMLIRFILES_EXT = $(MLIR_MEMREF_FILES_EXT) $(MLIR_LUS_FILES_EXT:.mlir=.tf.tensor.memref.mlir) $(TF_FILES_EXT:.mlir=.tensor.memref.mlir)
 
-all: $(APPNAME)
+ALLMLIRFILES_COMPACT = $(MLIR_MEMREF_FILES_COMPACT) $(MLIR_LUS_FILES_COMPACT:.mlir=.tf.tensor.memref.mlir)
 
-$(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
+all: $(APPNAME_EXT) $(APPNAME_COMPACT)
+
+$(APPNAME_EXT): $(ALLMLIRFILES_EXT:.mlir=.mlir.o) $(CFILES:.c=.c.o)
+	$(LD) $^ -o $@ $(LDFLAGS)
+
+$(APPNAME_COMPACT): $(ALLMLIRFILES_COMPACT:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
 %.mlir.o: %.mlir.s
@@ -49,13 +57,13 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
 	--finalizing-bufferize --cse -o=$@
 
-%.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
+%.lus.tf.mlir: %.lus.mlir $(MLIRLUS)
 	@echo "Compiling $< to $@"
 	@$(MLIRLUS) $< --normalize --convert-lus-to-sync --convert-sync-to-std -o=$@
 
 %.tf.tensor.mlir : %.tf.mlir
 	@echo "Compiling $< to $@"
-	@$(TF_OPT) $< --tf-to-hlo-pipeline --mhlo-test-unfuse-batch-norm |\
+	@$(TF_OPT) $< --canonicalize --sccp "-xla-legalize-tf=allow-partial-conversion use-tf2xla-fallback=true device-type=" --canonicalize |\
 	$(IREE_OPT)  -iree-flow-hlo-to-hlo-preprocessing \
 	-iree-flow-extract-pad-from-conv \
 	--iree-codegen-hlo-to-linalg-on-tensors \
@@ -70,4 +78,4 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 clean:
 	rm -f $(APPNAME)-wrapper.lus.tensor.mlir $(APPNAME)-wrapper.lus.tensor.memref.mlir
 	rm -f $(APPNAME)-wrapper.lus.tensor.memref.llvm.mlir
-	rm -f $(APPNAME) *.o
+	rm -f $(APPNAME_EXT) $(APPNAME_COMPACT) *.o
