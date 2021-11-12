@@ -43,6 +43,21 @@ void sched_set_input_memrefxxf32(TASK_ID_TYPE tid,
 		  allocated, aligned, offset, args);
 }
 
+void sched_set_input_memrefxxxxf32(TASK_ID_TYPE tid,
+				   int32_t      input_id,
+				   int32_t      dimensions,
+				   int32_t      datasize,
+				   // Here start the memref struct
+				   void*        allocated,
+				   void*        aligned,
+				   intptr_t     offset,
+				   ...) {
+  va_list args;
+  va_start(args, offset);
+  sched_set_input(tid, input_id, dimensions, datasize,
+		  allocated, aligned, offset, args);
+}
+
 void sched_set_input_memrefxi1(TASK_ID_TYPE tid,
 			       int32_t      input_id,
 			       int32_t      dimensions,

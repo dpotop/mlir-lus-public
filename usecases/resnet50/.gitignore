@@ -1,5 +1,4 @@
 *.o
-resnet-ext
-resnet-compact
-resnet-compact.lus.mlir
-resnet-ext.tf.mlir
+resnet
+resnet-seq
+resnet.tf.mlir

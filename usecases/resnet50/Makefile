@@ -3,29 +3,25 @@ include ../makefile.config
 
 # Application name
 APPNAME = resnet
-APPNAME_EXT = $(APPNAME)-ext
-APPNAME_COMPACT = $(APPNAME)-compact
+APPNAME_SEQ = resnet-seq
 
-TF_FILES_EXT = $(APPNAME_EXT).tf.mlir
-MLIR_LUS_FILES_EXT = $(APPNAME_EXT).lus.mlir
-MLIR_MEMREF_FILES_EXT = main-ext.memref.mlir
+TF_FILES = $(APPNAME).tf.mlir
+MLIR_LUS_FILES = $(APPNAME).lus.mlir
+MLIR_MEMREF_FILES = main.memref.mlir
 
-MLIR_MEMREF_FILES_COMPACT = main-compact.memref.mlir
-MLIR_LUS_FILES_COMPACT = $(APPNAME_COMPACT).lus.mlir
+RUNTIME_DIR = ../runtime
 
-CFILES = io.c tick.c
+CFILES = $(RUNTIME_DIR)/scheduler.c $(RUNTIME_DIR)/scheduler_io.c memrefs.c main.c
+CFILES_SEQ = io.c tick.c
 
-ALLMLIRFILES_EXT = $(MLIR_MEMREF_FILES_EXT) $(MLIR_LUS_FILES_EXT:.mlir=.tf.tensor.memref.mlir) $(TF_FILES_EXT:.mlir=.tensor.memref.mlir)
+ALLMLIR = $(MLIR_LUS_FILES:.mlir=.tf.tensor.memref.mlir) $(TF_FILES:.mlir=.tensor.memref.mlir)
+ALLMLIR_SEQ = main.memref.mlir $(MLIR_LUS_FILES:.mlir=.tf.tensor.memref.mlir) $(TF_FILES:.mlir=.tensor.memref.mlir)
 
-ALLMLIRFILES_COMPACT = $(MLIR_MEMREF_FILES_COMPACT) $(MLIR_LUS_FILES_COMPACT:.mlir=.tf.tensor.memref.mlir)
-
-all: $(APPNAME_EXT) $(APPNAME_COMPACT)
-
-$(APPNAME_EXT): $(ALLMLIRFILES_EXT:.mlir=.mlir.o) $(CFILES:.c=.c.o)
+$(APPNAME): $(ALLMLIR:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
-$(APPNAME_COMPACT): $(ALLMLIRFILES_COMPACT:.mlir=.mlir.o) $(CFILES:.c=.c.o)
-	$(LD) $^ -o $@ $(LDFLAGS)
+sequential: $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
+	$(LD) $^ -o $(APPNAME_SEQ) $(LDFLAGS)
 
 %.mlir.o: %.mlir.s
 	@echo "Compiling $< to $@"
@@ -76,6 +72,4 @@ $(APPNAME_COMPACT): $(ALLMLIRFILES_COMPACT:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f $(APPNAME)-wrapper.lus.tensor.mlir $(APPNAME)-wrapper.lus.tensor.memref.mlir
-	rm -f $(APPNAME)-wrapper.lus.tensor.memref.llvm.mlir
-	rm -f $(APPNAME_EXT) $(APPNAME_COMPACT) *.o
+	rm -f $(APPNAME) $(APPNAME_SEQ) *.o
