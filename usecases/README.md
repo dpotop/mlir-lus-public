@@ -27,7 +27,7 @@ All three examples can be compiled in two ways:
   This is the default choice, when ```make``` is invoked.
 * By generating a single sequential thread. In this case, instantiated
   nodes are all inlined in the main node. To build this implementation, 
-  one must build using the command ```make inlined```.
+  one must build using the command ```make sequential```.
 
 In the coroutine-based code generation, a run-time is needed.
 The application-independent implementation of this run-time is provided 
