@@ -1,5 +1,5 @@
 # Set up compilation configuration 
-input ../makefile.config
+include ../makefile.config
 
 # Application name
 APPNAME = rnn
@@ -23,7 +23,7 @@ $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 
 %.mlir.s: %.mlir.bc
 	@echo "Compiling $< to $@"
-	@$(LLC) -O3 --fp-contract=fast $< -o=$@
+	@$(LLC) -O3 $< -o=$@
 
 %.mlir.bc: %.llvm.mlir
 	@echo "Compiling $< to $@"
