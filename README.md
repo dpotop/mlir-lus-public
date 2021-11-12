@@ -37,16 +37,18 @@ In developing our dialects and their compilation process, we follow the maximal 
 
 Further reading: [H. Pompougnac, U. Beaugnon, A. Cohen, D. Potop - From SSA to Synchronous Concurrency and Back](https://hal.inria.fr/hal-03043623/document)
 
-# Structure of the repository
+# Getting started
 
 The repository comprises 3 main folders:
 * **mlir-lus** contains the implementation of the lus and sync dialects, and of the command-line **mlirlus*** tool allowing compilation of specifications based on these dialects. 
 * **mlir-prime** is a tool that exposes existing MLIR code transformations that are not exposed by the command-line transformation tools of MLIR. 
 * **usecases** showcases the use of our new dialects on a few signal processing and ML applications.
 
-# [Installation instructions](INSTALL.md)
+## [Installation instructions](INSTALL.md)
 
-# [Invocation of mlirlus and mlirprime](INVOCATION.md)
+## [Invocation of mlirlus and mlirprime](INVOCATION.md)
+
+## [Try the use cases](usecases/Readme.md)
 
 # Licensing
 
