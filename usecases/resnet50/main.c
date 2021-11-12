@@ -26,6 +26,10 @@ void sched_set_output_memrefxxf32(TASK_ID_TYPE tid,
 				  intptr_t     offset,
 				  ...);
 
+void wrapper(TASK_ID_TYPE tid,
+	     void    (*f1)(int32_t, void*, void*, intptr_t, ...),
+	     int32_t (*f2)(int32_t, void*, void*, intptr_t, ...));
+
 void task1_start(TASK_ID_TYPE tid) {
   if (tid == 1) {
     setup_time_logging(1);
