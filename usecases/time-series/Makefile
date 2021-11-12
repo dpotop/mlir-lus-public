@@ -8,15 +8,15 @@ APPNAME_SEQ = $(APPNAME)-seq
 TF_FILES = $(APPNAME).tf.mlir
 
 MLIR_MEMREF_FILES = rnn-aux.memref.mlir
-ALLMLIR_INLINE =  $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES)
+ALLMLIR =  $(TF_FILES:.mlir=.tensor.memref.mlir) $(MLIR_MEMREF_FILES)
 ALLMLIR_SEQ =  $(TF_FILES:.tf.mlir=-inline.tf.tensor.memref.mlir) $(MLIR_MEMREF_FILES) main.memref.mlir
 
 RUNTIME_DIR = ../runtime
 
-CFILES_INLINE = $(RUNTIME_DIR)/scheduler.c $(RUNTIME_DIR)/scheduler_io.c memrefs.c main.c
+CFILES = $(RUNTIME_DIR)/scheduler.c $(RUNTIME_DIR)/scheduler_io.c memrefs.c main.c
 CFILES_SEQ = tick.c
 
-$(APPNAME): $(ALLMLIR_INLINE:.mlir=.mlir.o) $(CFILES_INLINE:.c=.c.o)
+$(APPNAME): $(ALLMLIR:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
 sequential: $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)

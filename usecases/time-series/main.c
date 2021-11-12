@@ -28,7 +28,7 @@ void sched_set_output_memrefxxf32(TASK_ID_TYPE tid,
 
 void task1_start(TASK_ID_TYPE tid) {
   if (tid == 1) {
-    init_time();
+    setup_time_logging(1);
   }
   timeseries(tid, sched_read_input, sched_write_output);
 }
