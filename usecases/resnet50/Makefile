@@ -1,5 +1,5 @@
 # Set up compilation configuration 
-input ../makefile.config
+include ../makefile.config
 
 # Application name
 APPNAME = resnet
