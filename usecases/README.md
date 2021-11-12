@@ -19,6 +19,20 @@ the binaries are placed. For Linux, this folder is
 under ```$(HOME)/.cache/bazel```. For MacOS, it is 
 under ```/private/var/tmp```.
 
+## Coroutine-based vs. sequential implementation
+
+All three examples can be compiled in two ways:
+* Using the coroutine-based method described 
+  in [our paper](https://hal.inria.fr/hal-03043623/document). 
+  This is the default choice, when ```make``` is invoked.
+* By generating a single sequential thread. In this case, instantiated
+  nodes are all inlined in the main node. To build this implementation, 
+  one must build using the command ```make inlined```.
+
+In the coroutine-based code generation, a run-time is needed.
+The application-independent implementation of this run-time is provided 
+in the ```usecases/runtime``` folder.
+
 ## The use cases
 We provide 3 use cases: 
 * [A pitch tuning vocoder](vocoder/README.md)
