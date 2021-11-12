@@ -37,7 +37,7 @@ In developing our dialects and their compilation process, we follow the maximal 
 
 Further reading: [H. Pompougnac, U. Beaugnon, A. Cohen, D. Potop - From SSA to Synchronous Concurrency and Back](https://hal.inria.fr/hal-03043623/document)
 
-# Tool overview and structure of the repository
+# Structure of the repository
 
 The repository comprises 3 main folders:
 * **mlir-lus** contains the implementation of the lus and sync dialects, and of the command-line **mlirlus*** tool allowing compilation of specifications based on these dialects. 
