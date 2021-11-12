@@ -21,7 +21,7 @@ under ```/private/var/tmp```.
 
 ## The use cases
 We provide 3 use cases: 
-* [A pitch tuning vocoder](usecases/vocoder/README.md)
-* [A time series CNN based on LSTM](usecases/time-series/README.md)
-* [An instance of Resnet50](usecases/resnet50/README.md)
+* [A pitch tuning vocoder](vocoder/README.md)
+* [A time series CNN based on LSTM](time-series/README.md)
+* [An instance of Resnet50](resnet50/README.md)
 
