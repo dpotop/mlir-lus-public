@@ -48,7 +48,7 @@ The repository comprises 3 main folders:
 
 ## [Invocation of mlirlus and mlirprime](INVOCATION.md)
 
-## [Try the use cases](usecases/Readme.md)
+## [Compiling and executing the use cases](usecases/README.md)
 
 # Licensing
 
