@@ -3,6 +3,7 @@ include ../makefile.config
 
 # Application name
 APPNAME = pitch
+APPNAME_SEQ = pitch-seq
 
 # Highest abstraction level.
 # Synchronous and value semantics only.
@@ -23,6 +24,9 @@ MLIR_MEMREF_FILES = \
 	pitch.memref.mlir \
 	sndio.memref.mlir \
 
+ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(MLIR_TENSOR_FILES:.mlir=.memref.mlir) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir)
+ALLMLIRFILES_SEQ = main.memref.mlir $(MLIR_MEMREF_FILES) $(MLIR_TENSOR_FILES:.mlir=.memref.mlir) $(MLIR_LUS_FILES:.lus.mlir=-inline.lus.tensor.memref.mlir)
+
 RUNTIME_DIR = ../runtime
 
 CFILES = \
@@ -32,40 +36,54 @@ CFILES = \
 	$(RUNTIME_DIR)/scheduler.c \
 	$(RUNTIME_DIR)/scheduler_io.c \
 
+CFILES_SEQ = \
+	bitrev.c \
+	sndio.c \
+	tick.c \
+
 #-------------------------------------------------------------
 # Rules. DO NOT CHANGE
 #-------------------------------------------------------------
-ALLMLIRFILES = $(MLIR_MEMREF_FILES) $(MLIR_TENSOR_FILES:.mlir=.memref.mlir) $(MLIR_LUS_FILES:.mlir=.tensor.memref.mlir)  
-
-# all: pitch.lus.tensor.mlir
-all: $(APPNAME)
-
-.SECONDARY: pitch.lus.tensor.mlir pitch.lus.tensor.memref.mlir pitch.lus.tensor.memref.llvm.mlir
 
 $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
+sequential: $(ALLMLIRFILES_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
+	$(LD) $^ -o $(APPNAME_SEQ) $(LDFLAGS)
+
 %.mlir.o: %.mlir.s
-	$(CC) -c $< -o $@
+	@echo "Compiling $< to $@"
+	@$(CC) -c $< -o $@
 
 %.mlir.s: %.mlir.bc
-	$(LLC) $< -o=$@
+	@echo "Compiling $< to $@"
+	@$(LLC) $< -o=$@
 
 %.mlir.bc: %.llvm.mlir
-	$(MLIRTRANS) --mlir-to-llvmir $< -o=$@
+	@echo "Compiling $< to $@"
+	@$(MLIRTRANS) --mlir-to-llvmir $< -o=$@
 
 %.memref.llvm.mlir: %.memref.mlir
-	$(MLIROPT) --convert-linalg-to-affine-loops \
+	@echo "Compiling $< to $@"
+	@$(MLIROPT) --convert-linalg-to-affine-loops \
 			--lower-affine --convert-scf-to-std \
 			--convert-complex-to-llvm --convert-std-to-llvm $< -o=$@
 
 %.tensor.memref.mlir: %.tensor.mlir
-	$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
+	@echo "Compiling $< to $@"
+	@$(MLIROPT) --tensor-bufferize --scf-bufferize --std-bufferize \
 		--func-bufferize --buffer-results-to-out-params \
 		--finalizing-bufferize --buffer-deallocation $< -o=$@
 
 %.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
-	$(MLIRLUS) --normalize \
+	@echo "Compiling $< to $@"
+	@$(MLIRLUS) --normalize \
+			--convert-lus-to-sync --convert-sync-to-std $< |\
+		$(MLIROPT) --canonicalize --cse -sccp -o=$@
+
+%-inline.lus.tensor.mlir: %.lus.mlir $(MLIRLUS)
+	@echo "Compiling $< to $@"
+	@$(MLIRLUS) --normalize --inline-nodes \
 			--convert-lus-to-sync --convert-sync-to-std $< |\
 		$(MLIROPT) --canonicalize --cse -sccp -o=$@
 
@@ -82,10 +100,17 @@ run-debug: $(DEBUG)
 		nice -20 ./$(DEBUG) | \
 		play -q -t raw -r 44100 -e signed -b 16 -c 2 -
 
-run: pitch
+run: $(APPNAME)
 	mkfifo kbd
 	(rec -q -t raw -r 44100 -e signed -b 16 -c 2 - | \
-		nice -20 ./$(APPNAME) | \
+		nice -20 ./$< | \
+		play -q -t raw -r 44100 -e signed -b 16 -c 2 - 2>/dev/null&)
+	cat >kbd
+
+run-seq: $(APPNAME_SEQ)
+	mkfifo kbd
+	(rec -q -t raw -r 44100 -e signed -b 16 -c 2 - | \
+		nice -20 ./$< | \
 		play -q -t raw -r 44100 -e signed -b 16 -c 2 - 2>/dev/null&)
 	cat >kbd
 
