@@ -3,6 +3,7 @@
 #include <setjmp.h>
 #include <limits.h>
 #include <string.h>
+#include <sys/time.h>
 
 #include "error.h"
 #include "scheduler.h"
@@ -302,28 +303,34 @@ TASK_ID_TYPE sched_get_parent_tid(void) {
 // - tick() returns control to the instantiating module
 // - inst() gives control for one tick to an instantiated module
 
-static unsigned long start = 0;
-static unsigned long start_usec = 0;
-
-void init_time() {
-  struct timeval time;
-  gettimeofday(&time, NULL);
-  start = time.tv_sec;
-  start_usec = time.tv_usec;
+// We implement in the tick routine a time logging mechanism.
+// By default, this mechanism is inactive. It can be
+// activated by a call to set_time_logging(true).
+// After the point where this happens, each call to tick() will
+// log to the standard error the time (in usec) that lapsed since
+// the last call to tick() (or from the call to set_time_logging,
+// for the first tick().
+static bool log_time_flag = false ;
+static struct timeval stored_timeval ;
+void setup_time_logging(bool log_time) {
+  log_time_flag = log_time ;
+  if(log_time == true) {
+    gettimeofday(&stored_timeval,NULL) ;
+  }
 }
 
 int32_t tick(void) {
-  TASK_ID_TYPE tid = sched_get_tid();
-  if (tid == 1) {
-    struct timeval time;
-    gettimeofday(&time, NULL);
-    unsigned long stop = time.tv_sec;
-    unsigned long stop_usec = time.tv_usec;
-    unsigned long elapsed = (stop - start) * 1000000 + stop_usec - start_usec;
-    printf("timestamp: %lu us\n", elapsed);
-    gettimeofday(&time, NULL);
-    start = time.tv_sec;
-    start_usec = time.tv_usec;
+  if(log_time_flag) {
+    TASK_ID_TYPE tid = sched_get_tid();
+    if (tid == 1) {
+      struct timeval t ;
+      gettimeofday(&t, NULL);
+      unsigned long long elapsed_usec =
+	(t.tv_sec - stored_timeval.tv_sec)*1000000 +
+	(t.tv_usec - stored_timeval.tv_usec) ;
+      stored_timeval = t ;
+      DEBUG_PRINTF("Tick duration: %llu\n",elapsed_usec) ;
+    }
   }
   sched_set_task(sched_get_parent_tid()) ;
   sched_relinquish() ;
