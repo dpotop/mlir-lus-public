@@ -40,13 +40,9 @@ Further reading: [H. Pompougnac, U. Beaugnon, A. Cohen, D. Potop - From SSA to S
 # Tool overview and structure of the repository
 
 The repository comprises 3 main folders:
-* **mlir-lus** contains the implementation of the lus and sync dialects, under the foem 
-* **mlir-prime** is a tool developed on top of MLIR  
-
-normalisation
-inlining
-passage de lus a sync+scf
-passade de sync a standard
+* **mlir-lus** contains the implementation of the lus and sync dialects, and of the command-line **mlirlus*** tool allowing compilation of specifications based on these dialects. 
+* **mlir-prime** is a tool that exposes existing MLIR code transformations that are not exposed by the command-line transformation tools of MLIR. 
+* **usecases** showcases the use of our new dialects on a few signal processing and ML applications.
 
 # Installation instructions
 
