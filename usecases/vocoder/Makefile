@@ -91,9 +91,7 @@ sequential: $(ALLMLIRFILES_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f pitch.lus.tensor.mlir pitch.lus.tensor.memref.mlir
-	rm -f pitch.lus.tensor.memref.llvm.mlir
-	rm -f $(APPNAME) *.o
+	rm -f $(APPNAME) $(APPNAME_SEQ) *.o
 
 run-debug: $(DEBUG)
 	rec -q -t raw -r 44100 -e signed -b 16 -c 2 - | \
