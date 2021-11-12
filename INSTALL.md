@@ -91,39 +91,41 @@ git checkout 4f218a8be5ba3e840ebfc8300c9124d01ab0ecc1
 git submodule update --init
 ```
 ### Step 3.2: Compilation of Tensorflow (as a dependence of IREE)
-From the iree directory :
 ```
-cd third_party/tensorflow
+cd iree/third_party/tensorflow
 git submodule update --init
 bazel build //tensorflow/compiler/mlir:tf-mlir-translate
 bazel build //tensorflow/compiler/mlir:tf-opt
 ```
-After compilation, 
-```iree/third_party/tensorflow/bazel-out/k8-opt/bin/tensorflow/compiler/mlir```
-must be added to $PATH.
+
+After compilation, add to the ```$PATH``` environment variable the 
+following path:
+```
+$PATH_TO_IREE/iree/third_party/tensorflow/bazel-out/k8-opt/bin/tensorflow/compiler/mlir
+```
+
 ### Compilation of IREE
-From iree directory :
+From the iree directory :
 ```
 python3 configure_bazel.py
 bazel build //tensorflow/compiler/mlir:tf-mlir-translate
 bazel build //iree/tools:iree-opt
 ```
    
-After compilation, ```iree/bazel-out/k8-opt/bin/iree/tools``` must be added 
-to $PATH.
+After compilation, add to the ```$PATH``` environment variable the 
+following path: 
+```
+$PATH_TO_IREE/iree/bazel-out/k8-opt/bin/iree/tools
+```
 
-## Sound eXchange (SoX)
-Our use case requires the use of the sox sound processing toolbox. 
+## Install Sound eXchange (SoX)
+This is a sound processing toolbox needed by the Vocoder use case.
 * On Ubuntu Linux, it can be installed with ```sudo apt-get install sox```
 * Under MacOSX, using ```macports```, the install command 
   is ```sudo port install sox```
 
-## MLIRLus
-
-MLIRLus is the implementation of our embedding of Lustre in MLIR.
-
+## mlir-lus - compilation and command line options
 ### Compilation
-
 In the mlir-lus folder :
 
 1- Create the file Makefile.config and set within it the variables LLVM, CPP, 
@@ -141,25 +143,33 @@ LD=clang++-9
 
 3- Build mlirlus with ```make```
 
-### Options
+### Command line options
+Compilation produces the command line tool mlirlus.
+It takes one input file and prints its output
+on the standard output. 
 
-The produced binary (named mlirlus) takes an input file and prints its output
-on the standard output. The command : ```./mlirlus file.lus``` just parses
-file.lus, verify its correction and prints it.
-Several options can be composed :
-* ```--normalize``` replaces fby and pre operations by representing state
-  in the node signature, and ensures that dominance rules are now respected
-  in lus code.
-* ```--inline-nodes``` inline nodes instead of truly instantiating them when
-  lus.instance is specified.
-* ```--convert-lus-to-sync``` convert lus operations to sync operations and
-  scf operations (for the main loop and for the clock-based predicates).
-* ```--convert-sync-to-scf``` convert sync operations to std operations
+The command : ```./mlirlus file.lus``` just parses
+file.lus, verifies its syntactic correction and prints it unchanged.
+
+mlirlus takes several options, which activate the various Lustre-specific
+compilation steps described in [this paper](https://hal.inria.fr/hal-03043623/document):
+* ```--normalize``` performes the lus dialect normalization step.
+  It makes all fby and pre operations work on the base clock (at every cycle)
+  and then moves their representation in the node signature, as loop-carried dependences. 
+  This ensures the respect of dominance rules. 
+* ```--inline-nodes```. When requested using the ```inline``` keyword in the program
+  text, this step inlines instantiated nodes to avoid creating a new thread
+  in the implementation.
+* ```--convert-lus-to-sync``` converts lus operations to a combination of 
+  operations of the dialects sync and scf (structured control flow).
+* ```--convert-sync-to-scf``` converts sync operations to std operations,
+  including calls to the run-time functions implementing the reactive 
+  execution machine.
 
 ## MLIR prime
 
-MLIR prime is an auxiliary tool which implements a bunch of optimizations
-using MLIR libraries (and some bug corrections).
+MLIR prime is an auxiliary tool which exposes a number of MLIR code
+transformations (and corrects some bugs).
 
 ### Compilation
 
