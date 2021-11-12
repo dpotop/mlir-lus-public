@@ -1,7 +1,6 @@
 ### Build the use case
 
-Move to the ```pitch-sched``` directory and build the use case ```make```
-The result of compilation is file ```pitch```.
+Move to the ```pitch-sched``` directory and build the use case ```make``` (to build the coroutine-based concurrent implementation) or ```make inlined``` (to build the sequential implementation). The result of compilation is the executable file ```pitch```.
 
 ### Running the use case
 
