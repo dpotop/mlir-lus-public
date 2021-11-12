@@ -46,7 +46,7 @@ The repository comprises 3 main folders:
 
 # Installation instructions
 
-## External packages
+## Dependences
 Our tool is built on top of LLVM/MLIR, which itself requires:
 * A recent version of clang (we recommend clang-9). For Ubuntu Linux, it can 
   be installed with:
@@ -54,7 +54,7 @@ Our tool is built on top of LLVM/MLIR, which itself requires:
   sudo apt-get install clang-9 llvm-9.0 llvm-devel clang-devel
   ```
 * A recent version of cmake (>= cmake 13). For Ubuntu Linux, it must be 
-  installed from sources to be downloaded at ```https://cmake.org/download```
+  installed from sources to be downloaded at https://cmake.org/download
 * Python 3 and pip :
   ```
    sudo apt-get install python3 python3-dev python3-pip
