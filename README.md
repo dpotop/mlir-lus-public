@@ -48,6 +48,10 @@ The repository comprises 3 main folders:
 
 Installation instructions can be found [here](INSTALL.md)
 
+# Invocation of mlirlus and mlirprime
+
+The manual of the two tools can be found [here](INVOCATION.md)
+
 # Licensing
 
 TODO - for now there is no license, meaning that code cannot be reused. We are currently evaluating our options.
