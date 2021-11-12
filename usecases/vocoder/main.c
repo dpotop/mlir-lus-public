@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include <strings.h>
 #include <stdint.h>
+#include <fcntl.h>
+#include <unistd.h>
 
-#include "error.h"
-#include "scheduler.h"
+#include "../runtime/scheduler.h"
 #include "memrefs.h"
 
 void sched_set_output_memrefxi16(TASK_ID_TYPE tid,
@@ -37,7 +38,74 @@ void sched_set_input_memrefxi16(TASK_ID_TYPE tid,
 			       intptr_t     offset,
 				...);
 
-void task1_start(TASK_ID_TYPE tid);
+static int kbd_fd = -1 ;
+void open_kbd() {
+  kbd_fd = open("kbd",O_RDONLY|O_NONBLOCK) ;
+  if(kbd_fd<0){
+    perror("Cannot open named fifo.\n") ;
+    //    exit(0) ;
+  }
+}
+
+
+void sched_read_input_kbd(int32_t      input_id,
+			  // Here start the memref struct
+			  void*        allocated,
+			  void*        aligned,
+			  intptr_t     offset,
+			  ...) {
+  char* tmp_buf = (char*)aligned ;
+  read(kbd_fd,tmp_buf,1);
+}
+
+void sched_read_input_snd(int32_t      input_id,
+			  // Here start the memref struct
+			  void*        allocated,
+			  void*        aligned,
+			  intptr_t     offset,
+			  ...) {
+  int r;
+  int datasize = sizeof(int16_t);
+  int shape = 512;
+  int r_acc = datasize * shape;
+  char* tmp_buf = (char*)aligned ;
+  for(;r_acc;r_acc-=r,tmp_buf+=r) {
+    r = read(0,tmp_buf,r_acc) ;
+    if(r<0) {
+      perror("read_samples error:") ;
+      exit(0) ;
+    } 
+  }
+}
+
+int32_t sched_write_output_snd(int32_t      output_id,
+			       // Here start the memref struct
+			       void*        allocated,
+			       void*        aligned,
+			       intptr_t     offset,
+			       ...) {
+  int w;
+  int datasize = sizeof(int16_t);
+  int shape = 512;
+  int w_acc = datasize * shape;
+  char* tmp_buf = (char*)aligned ;
+    for(;w_acc;w_acc-=w,tmp_buf+=w) {
+    w = write(1,tmp_buf,w_acc) ;
+    if(w<0) {
+      perror("write_samples error:") ;
+      exit(0) ;
+    }
+  }
+  fflush(stdout) ;
+  return 0;
+}
+
+void task1_start(TASK_ID_TYPE tid) {
+  setup_time_logging(0);
+  open_kbd();
+  pitch(tid, sched_read_input_kbd, sched_read_input_snd,
+	sched_write_output_snd);
+}
 
 // This is the main task of the system, which instantiates the
 // tick synchronization and instantiates the main node. It should

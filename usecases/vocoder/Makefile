@@ -1,5 +1,5 @@
 # Set up compilation configuration 
-input ../makefile.config
+include ../makefile.config
 
 # Application name
 APPNAME = pitch
@@ -23,12 +23,14 @@ MLIR_MEMREF_FILES = \
 	pitch.memref.mlir \
 	sndio.memref.mlir \
 
+RUNTIME_DIR = ../runtime
+
 CFILES = \
 	bitrev.c \
 	main.c \
 	memrefs.c \
-	scheduler-aux.c \
-	scheduler.c \
+	$(RUNTIME_DIR)/scheduler.c \
+	$(RUNTIME_DIR)/scheduler_io.c \
 
 #-------------------------------------------------------------
 # Rules. DO NOT CHANGE
