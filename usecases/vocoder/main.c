@@ -100,6 +100,11 @@ int32_t sched_write_output_snd(int32_t      output_id,
   return 0;
 }
 
+void pitch(TASK_ID_TYPE tid,
+	   void    (*f1)(int32_t, void*, void*, intptr_t, ...),
+	   void    (*f2)(int32_t, void*, void*, intptr_t, ...),
+	   int32_t (*f3)(int32_t, void*, void*, intptr_t, ...));
+
 void task1_start(TASK_ID_TYPE tid) {
   setup_time_logging(0);
   open_kbd();
