@@ -6,6 +6,7 @@ We provide the weights through our [Google Drive](https://drive.google.com/drive
 which must be downloaded and uncompressed inside the ```usecases/resnet50```
 folder with the command ```gzip -d resnet.tf.mlir.gz```.
 
-To compile, execute ```make``` or ```make sequential```, which
-produces the executable file ```resnet```. Execution of this file will
+To compile, execute ```make```, which produces the coroutine-based 
+executable file ```resnet```, or ```make sequential```, which
+produces the executable file ```resnet-seq```. Execution of these files will
 print the timestamp and duration at the end of each execution cycle.
