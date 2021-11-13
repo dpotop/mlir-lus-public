@@ -13,13 +13,16 @@ and set the correct values for these variables.
 Assuming that LLVM/MLIR is installed under $(HOME)/llvm, and that you
 compile the use cases in the git repository tree, the two variables
 that require setting are ```IREE_BIN_DIR``` and ```TF_BIN_DIR```.
-
 These two variables must point in the Bazel compilation cache, where
 the binaries are placed. For Linux, this folder is 
 under ```$(HOME)/.cache/bazel```. For MacOS, it is 
 under ```/private/var/tmp```.
 
 ## Coroutine-based vs. sequential implementation
+
+To compile each of the 3 examples, move to the corresponding
+folder and execute ```make```. For the execution, each example has 
+separate instructions in the README file of its folder.
 
 All three examples can be compiled in two ways:
 * Using the coroutine-based method described 
