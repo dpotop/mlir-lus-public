@@ -20,7 +20,7 @@ ALLMLIR_SEQ = main.memref.mlir $(MLIR_LUS_FILES:.mlir=.tf.tensor.memref.mlir) $(
 $(APPNAME): $(ALLMLIR:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
-sequential: $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
+$(APPNAME_SEQ): $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
 	$(LD) $^ -o $(APPNAME_SEQ) $(LDFLAGS)
 
 %.mlir.o: %.mlir.s

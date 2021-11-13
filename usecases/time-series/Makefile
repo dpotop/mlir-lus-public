@@ -19,7 +19,7 @@ CFILES_SEQ = tick.c
 $(APPNAME): $(ALLMLIR:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-sequential: $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
+$(APPNAME_SEQ): $(ALLMLIR_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
 	$(CC) $^ -o $(APPNAME_SEQ) $(LDFLAGS)
 
 %.mlir.o: %.mlir.s

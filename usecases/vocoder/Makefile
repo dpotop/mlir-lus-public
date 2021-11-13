@@ -48,7 +48,7 @@ CFILES_SEQ = \
 $(APPNAME): $(ALLMLIRFILES:.mlir=.mlir.o) $(CFILES:.c=.c.o)
 	$(LD) $^ -o $@ $(LDFLAGS)
 
-sequential: $(ALLMLIRFILES_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
+$(APPNAME_SEQ): $(ALLMLIRFILES_SEQ:.mlir=.mlir.o) $(CFILES_SEQ:.c=.c.o)
 	$(LD) $^ -o $(APPNAME_SEQ) $(LDFLAGS)
 
 %.mlir.o: %.mlir.s
@@ -114,4 +114,5 @@ run-seq: $(APPNAME_SEQ)
 
 kill:
 	rm -f kbd
-	killall -9 pitch
+	killall -9 $(APPNAME)
+	killall -9 $(APPNAME_SEQ)
