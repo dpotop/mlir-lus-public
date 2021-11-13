@@ -23,6 +23,7 @@ namespace mlir {
       }
       Operation* calleeOp = SymbolTable::lookupSymbolIn(rootOp,
 							getCalleeName());
+      assert(calleeOp);
       NodeOp calleeNode = dyn_cast<NodeOp>(calleeOp);
       return calleeNode;
     }

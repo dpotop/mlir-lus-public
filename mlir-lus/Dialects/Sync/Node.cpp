@@ -40,6 +40,7 @@ namespace mlir {
       		      });
 
       auto type = builder.getType<NodeType,
+				  ArrayRef<Type>,
     				  ArrayRef<Type>,
     				  ArrayRef<Type>>(statics,
 						  inputSig,
@@ -109,7 +110,6 @@ namespace mlir {
 						  outTys);
 
       result.addAttribute(getTypeAttrName(), TypeAttr::get(type));
-
       
       return success();
     }
@@ -141,12 +141,12 @@ namespace mlir {
     }
 		  
     void NodeOp::print(OpAsmPrinter &p) {
+
       // print the node name  
       StringRef nodeName = getNodeName() ;
       p << getOperationName() << ' ';
 
       p.printSymbolName(nodeName);
-      p.printOptionalAttrDict(getOperation()->getAttrs(), /*elidedAttrs=*/{});
       
       // Print the signature inputs  
       Region &body = this->getBody();

@@ -1,4 +1,5 @@
 #include "InstOp.h"
+#include "mlir/Pass/Pass.h"
 
 namespace mlir {
   namespace sync {
@@ -8,7 +9,6 @@ namespace mlir {
       Operation *calleeNodePtr = getCalleeNode();
       if (!isa<NodeOp>(calleeNodePtr))
       	return emitOpError() << getCalleeName() << " must be a node.";
-
       NodeOp calleeNode = dyn_cast<NodeOp>(calleeNodePtr);
       NodeType calleeType = calleeNode.getType();
       auto calleeInputTypes = calleeType.getInputs();
@@ -54,7 +54,6 @@ namespace mlir {
       if (!getOperation()->getAttr(getIdAttrName()) ||
 	  !getOperation()->getAttr(getIdAttrName()).cast<IntegerAttr>())
 	return emitOpError() << "Instance id must be set and integer";
-
       return success();
     }
 
@@ -72,10 +71,8 @@ namespace mlir {
     
     ParseResult InstOp::parse(OpAsmParser &parser,
 			      OperationState &result) {
-      
-	
       SmallVector<OpAsmParser::OperandType, 4> inputs;
-      Type t;
+      FunctionType ft;
       llvm::SMLoc loc = parser.getCurrentLocation();
       FlatSymbolRefAttr calleeAttr;
       IntegerAttr idAttr;
@@ -85,12 +82,9 @@ namespace mlir {
 	  parser.parseLParen() ||
 	  parser.parseOperandList(inputs) ||
 	  parser.parseRParen() ||
-	  parser.parseColonType(t))
+	  parser.parseColonType(ft))
 	return failure();
 
-      if (!t.isa<FunctionType>())
-	return failure();
-      FunctionType ft = t.cast<FunctionType>();
       if (parser.resolveOperands(inputs, ft.getInputs(),
 				 loc, result.operands))
 	return failure();
@@ -114,16 +108,18 @@ namespace mlir {
 	  i++;
 	}
       }
-      p << ") : " << getResults().getTypes();
+      p << ") : (" << getOperands().getTypes() << ")"
+	<< " -> " <<  getResults().getTypes();
     }
 
     Operation* InstOp::getCalleeNode() {
       Operation* rootOp = getOperation();
-      while (auto* parentOp = rootOp->getParentOp()) {
-	rootOp = parentOp;
+      while (!isa<ModuleOp>(rootOp)) {
+	rootOp = rootOp->getParentOp();
       }
       Operation* calleeOp = SymbolTable::lookupSymbolIn(rootOp,
-							getCalleeName());
+      							getCalleeName());
+      assert(calleeOp);
       return calleeOp;
     }
 

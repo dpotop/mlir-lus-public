@@ -25,8 +25,7 @@ namespace mlir {
       CallableOpInterface::Trait > {
       
     public:      
-
-      using Op::Op;
+      using Op::Op ;
 
       static StringRef getOperationName() { return "sync.node"; }
       static void build(OpBuilder &, OperationState &, StringRef,

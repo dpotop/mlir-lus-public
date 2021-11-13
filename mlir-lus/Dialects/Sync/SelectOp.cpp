@@ -17,15 +17,15 @@ namespace mlir {
       Type t;
       if (parser.parseOptionalAttrDict(result.attributes) ||
 	  parser.parseOperand(cond) ||
-	  parser.resolveOperand(cond, builder.getI1Type(), result.operands) ||
 	  parser.parseOperand(br1) ||
 	  parser.parseOperand(br2) ||
 	  parser.parseColonType(t) ||
+	  parser.resolveOperand(cond, builder.getI1Type(), result.operands) ||
 	  parser.resolveOperand(br1, t, result.operands) ||
 	  parser.resolveOperand(br2, t, result.operands))
 	return failure();
       result.addTypes({t});
-      return failure();
+      return success();
     }
 
     LogicalResult SelectOp::verify() {
