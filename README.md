@@ -1,6 +1,3 @@
-# ATTENTION: THIS DOCUMENTATION IS CURRENTLY UPDATED
-
-
 # Reactive programming in [MLIR](https://mlir.llvm.org)
 
 While compilation frameworks such as [MLIR](https://mlir.llvm.org) concentrate the existing know-how in
