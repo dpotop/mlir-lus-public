@@ -162,3 +162,7 @@ This is a sound processing toolbox needed by the Vocoder use case.
   is ```sudo port install sox```
 
 
+# Licensing
+
+This software is released under the GNU General Public License, version 2.0 or later, as detailed in the [LICENSE](LICENSE) file.
+
