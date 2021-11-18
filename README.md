@@ -52,7 +52,7 @@ The repository comprises 3 main folders:
 
 # Licensing
 
-TODO - for now there is no license, meaning that code cannot be reused. We are currently evaluating our options.
+This software is released under the GNU General Public License, version 2.0 or later, as detailed in the [LICENSE](LICENSE) file.
 
 # Contact information
 
