@@ -3,8 +3,6 @@
 #include <strings.h>
 #include <stdint.h>
 
-#include "error.h"
-
 #ifndef MEMREFS_H
 #define MEMREFS_H
 
