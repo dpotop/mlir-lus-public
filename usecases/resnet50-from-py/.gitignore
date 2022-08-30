@@ -1,0 +1,4 @@
+*.o
+resnet
+resnet-seq
+resnet.tf.mlir
