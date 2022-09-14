@@ -2,5 +2,4 @@
 *.so
 main
 mlirlus
-Makefile.config
 makefile.depend

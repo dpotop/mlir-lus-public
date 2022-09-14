@@ -1,5 +1,4 @@
 *.o
 *.prime
 mlir-prime
-Makefile.config
 makefile.depend
