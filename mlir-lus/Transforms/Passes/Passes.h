@@ -9,7 +9,7 @@ namespace mlir {
   class Pass;
   std::unique_ptr<mlir::Pass> createUpOpsPass();
   namespace lus {
-
+    std::unique_ptr<mlir::Pass> createPersistFbyPass();
     std::unique_ptr<mlir::Pass> createRemoveFbyPass();
     std::unique_ptr<mlir::Pass> createRemovePrePass();
     std::unique_ptr<mlir::Pass> createScheduleDominancePass();

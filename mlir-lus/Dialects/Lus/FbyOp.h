@@ -23,6 +23,7 @@ namespace mlir {
       Value getRhs() { return getOperand(1) ; }
 
       LogicalResult verify();
+      static void build(Builder &builder, OperationState &state, Value v1, Value v2);
       static ParseResult parse(OpAsmParser &parser, OperationState &result);
       void print(OpAsmPrinter &p);
     };

@@ -129,6 +129,7 @@ H_TRANS_LUS_LUS = \
 	$(TRANS_LUS_LUS_DIR)EnsureDominance.h \
 	$(TRANS_LUS_LUS_DIR)InlineNodes.h \
 	$(TRANS_LUS_LUS_DIR)RemoveFby.h \
+	$(TRANS_LUS_LUS_DIR)PersistFby.h \
 	$(TRANS_LUS_LUS_DIR)RemovePre.h \
 
 CPP_TRANS_LUS_LUS = \
@@ -136,6 +137,7 @@ CPP_TRANS_LUS_LUS = \
 	$(TRANS_LUS_LUS_DIR)InlineNodes.cpp \
 	$(TRANS_LUS_LUS_DIR)RemovePre.cpp \
 	$(TRANS_LUS_LUS_DIR)RemoveFby.cpp \
+	$(TRANS_LUS_LUS_DIR)PersistFby.cpp \
 
 H_TRANS_SYNC_STD = \
 	$(TRANS_SYNC_STD_DIR)NodeToFun.h \
@@ -191,6 +193,7 @@ CPP_PASSES = \
 	$(PASSES_DIR)UpOpsPass.cpp \
 	$(PASSES_DIR)SyncToLLVMPass.cpp \
 	$(PASSES_DIR)RemoveFbyPass.cpp \
+	$(PASSES_DIR)PersistFbyPass.cpp \
 	$(PASSES_DIR)RemovePrePass.cpp \
 	$(PASSES_DIR)ScheduleDominancePass.cpp \
 	$(PASSES_DIR)GenPredicatesPass.cpp \

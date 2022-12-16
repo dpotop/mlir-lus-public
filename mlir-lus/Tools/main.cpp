@@ -232,6 +232,7 @@ int main(int argc, char **argv) {
     mlir::OpPassManager &lusNodePM = pm.nest<mlir::lus::NodeOp>();
     
     if(ensureLusDom) {
+      lusNodePM.addPass(mlir::lus::createPersistFbyPass());
       lusNodePM.addPass(mlir::lus::createRemoveFbyPass());
       lusNodePM.addPass(mlir::lus::createRemovePrePass());
       lusNodePM.addPass(mlir::lus::createScheduleDominancePass());

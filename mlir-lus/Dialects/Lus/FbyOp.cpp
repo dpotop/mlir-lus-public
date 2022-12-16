@@ -19,6 +19,12 @@ namespace mlir {
       return mlir::success() ;
     }
 
+    void FbyOp::build(Builder &builder, OperationState &state, Value v1, Value v2) {
+      state.addOperands(v1);
+      state.addOperands(v2);
+      state.addTypes(v1.getType());
+    }
+
     ParseResult FbyOp::parse(OpAsmParser &parser, OperationState &result) {
       OpAsmParser::OperandType inputOperands[2];
       Type t;
